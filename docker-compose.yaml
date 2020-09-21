@@ -37,3 +37,15 @@ services:
       --enable-query-batching
       --legacy-relations omit
       --schema app
+
+  app:
+    build:
+      context: ./app
+    ports:
+      - 5000:5000
+      - 35729:35729
+    volumes:
+      - ./app/src:/app/src
+    environment:
+      - HOST=0.0.0.0
+    command: npm run dev
