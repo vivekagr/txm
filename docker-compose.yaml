@@ -1,0 +1,39 @@
+version: '3.6'
+services:
+  pg:
+    build:
+      context: ./db
+      dockerfile: Dockerfile.pg
+    restart: always
+    environment:
+      - POSTGRES_DB=txm
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+
+  graphile:
+    build:
+      context: ./db
+      dockerfile: Dockerfile.graphile
+    ports:
+      - 5433:5433
+    depends_on:
+      - pg
+    restart: always
+    command: --connection postgres://postgres:postgrespass@pg/txm
+      --port 5433
+      --subscriptions
+      --watch
+      --dynamic-json
+      --no-setof-functions-contain-nulls
+      --no-ignore-rbac
+      --no-ignore-indexes
+      --show-error-stack=json
+      --extended-errors hint,detail,errcode
+      --append-plugins @graphile-contrib/pg-simplify-inflector
+      --export-schema-graphql schema.graphql
+      --graphiql "/"
+      --enhance-graphiql
+      --allow-explain
+      --enable-query-batching
+      --legacy-relations omit
+      --schema app
