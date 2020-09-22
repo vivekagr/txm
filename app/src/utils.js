@@ -65,5 +65,63 @@ export function extractTransactionsFromSheet (sheet) {
         s: header.start.decoded,
         e: { r: lastRowIndex, c: header.end.decoded.c }
     });
-    return XLSX.utils.sheet_to_json(sheet, { range: transactionsRange });
+
+    // Build array of header cell strings
+    const headerRow = [];
+    for (let c = header.start.decoded.c; c <= header.end.decoded.c; c++) {
+        headerRow.push(sheet[XLSX.utils.encode_cell({ c: c, r: header.start.decoded.r })]);
+    }
+
+    return {
+        data: XLSX.utils.sheet_to_json(sheet, { range: transactionsRange, raw: false }),
+        headers: headerRow.map(h => h.w || h.v)
+    };
+}
+
+const HEADER_MAP = {
+    date: ['value dt', 'value date', 'date'],
+    narration: ['narration', 'description'],
+    reference: ['chq./ref.no.', 'ref no./cheque no.'],
+    debit: ['withdrawal amt.', 'debit'],
+    credit: ['deposit amt.', 'credit']
+}
+
+// Builds <sheet header value> => <standard name> map
+const createLookupMap = (headers) => {
+    const map = {};
+
+    for (const [key, allowedValues] of Object.entries(HEADER_MAP)) {
+        for (const h of headers) {
+            if (allowedValues.indexOf(h.trim().toLowerCase()) > -1) {
+                map[key] = h;
+                break;  // break out of internal loop if match is found to prevent multiple matches
+            }
+        }
+    }
+
+    return map;
+}
+
+const clean = s => {
+    let _s = (s || '').trim();
+    if (_s === '-') return '';
+    return _s;
+}
+
+// Clean & transform the given transaction objects into standard transaction object format
+export function transformTransactionList(headers, txs) {
+    const headerLookupMap = createLookupMap(headers);
+
+    const transformedTxs = txs.flatMap(tx => {
+        if (/^\*+$/.test(tx[headerLookupMap['date']])) return []
+        return {
+            date: clean(tx[headerLookupMap['date']]),
+            narration: clean(tx[headerLookupMap['narration']]),
+            reference: clean(tx[headerLookupMap['reference']]),
+            amount: clean(tx[headerLookupMap['debit']]) || clean(tx[headerLookupMap['credit']]),
+            isCredit: !!clean(tx[headerLookupMap['credit']])
+        }
+    })
+
+    return transformedTxs
 }

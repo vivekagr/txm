@@ -1,11 +1,10 @@
 <script>
 	import XLSX from 'xlsx';
-	import { extractTransactionsFromSheet } from './utils'
+	import { extractTransactionsFromSheet, transformTransactionList } from './utils'
 
-	let files;
-	let sheet;
+	let rows;
 
-	const readFileAsync = file => new Promise((resolve, reject) => {
+	const readFileAsArrayBufferAsync = file => new Promise((resolve, reject) => {
 		let reader = new FileReader();
 		reader.onload = () => resolve(reader.result);
 		reader.onerror = reject;
@@ -13,26 +12,54 @@
 	})
 
 	async function parseSheet(file) {
-		const data = await readFileAsync(file);
-		const workbook = XLSX.read(data, {type: 'array'});
-		sheet = workbook.Sheets[workbook.SheetNames[0]];
+		// read given file as ArrayBuffer
+		const dataArrayBuffer = await readFileAsArrayBufferAsync(file);
+		// read the file as workbook & get the main sheet
+		const workbook = XLSX.read(dataArrayBuffer, {type: 'array', raw: true });
+		const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+		// extract transaction from the sheet (that might contain non-transaction information)
+		// and transform+clean it into a usable data
+		const { headers, data } = extractTransactionsFromSheet(sheet);
+		rows = transformTransactionList(headers, data);
 	}
 
-	// window.utilz = XLSX.utils;
-
-	$: if (files && files.length) {
-		parseSheet(files[0]);
+	function handleFileChange(e) {
+		parseSheet(e.target.files[0]);
 	}
-
-	$: console.log(sheet ? extractTransactionsFromSheet(sheet) : null);
 
 </script>
 
 <main>
-	<input type='file' bind:files />
+	<input
+		type='file'
+		accept='.xls,.xlsx'
+		on:change={handleFileChange}
+	/>
 
-	{#if sheet}
-		{sheet}
+	{#if rows}
+		<table>
+			<thead>
+				<tr>
+					<td>date</td>
+					<td>narration</td>
+					<td>reference</td>
+					<td>credit</td>
+					<td>debit</td>
+				</tr>
+			</thead>
+			<tbody>
+				{#each rows as row}
+				<tr>
+					<td>{row.date}</td>
+					<td>{row.narration}</td>
+					<td>{row.reference}</td>
+					<td>{row.isCredit ? row.amount : ''}</td>
+					<td>{!row.isCredit ? row.amount : ''}</td>
+				</tr>
+				{/each}
+			</tbody>
+		</table>
 	{/if}
 </main>
 
@@ -40,7 +67,7 @@
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
+		max-width: 960px;
 		margin: 0 auto;
 	}
 </style>
