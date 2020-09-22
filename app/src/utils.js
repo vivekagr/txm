@@ -9,8 +9,6 @@ export function extractTransactionsFromSheet (sheet) {
         end: { encoded: null, decoded: null }
     }
 
-    let lastRowIndex;
-
     // find the beginning of the transactions by looking up date header cell
     for (let cell in sheet) {
         if (!sheet.hasOwnProperty(cell) || !sheet[cell]) continue;
@@ -23,6 +21,10 @@ export function extractTransactionsFromSheet (sheet) {
             header.start.decoded = XLSX.utils.decode_cell(cell);
             break
         }
+    }
+
+    if (!header.start.encoded) {
+        throw Error('Coudln\'t find the date header cell');
     }
 
     // calculate the end cell on header row naively by just looking up sheet's last column
@@ -45,6 +47,9 @@ export function extractTransactionsFromSheet (sheet) {
             }
         }
     }
+
+    // Assume that the last row for the entire sheet is the last transaction row
+    let lastRowIndex = sheetRange.e.r;
 
     // Vertically scan down from the header beginning cell to find the last transaction row index
     for (let r = header.start.decoded.r; r <= sheetRange.e.r; r++) {
