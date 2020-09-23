@@ -26,7 +26,7 @@ export const CURRENCIES = gql`
 
 export const ACCOUNTS = gql`
     {
-        accounts {
+        accounts(orderBy: ID_DESC) {
             totalCount
             nodes {
                 id

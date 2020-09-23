@@ -24,7 +24,7 @@
                     query: ACCOUNTS,
                     data: {
                         accounts: {
-                            nodes: [...existingAccounts.accounts.nodes, newAccount],
+                            nodes: [newAccount, ...existingAccounts.accounts.nodes],
                             totalCount: existingAccounts.accounts.totalCount + 1,
                             __typename: existingAccounts.accounts.__typename
                         },
