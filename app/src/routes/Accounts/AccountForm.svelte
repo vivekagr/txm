@@ -35,8 +35,6 @@
     }
 </script>
 
-{accountTypeId}
-
 <form on:submit|preventDefault={handleSubmit}>
     <input type='text' bind:value={bank} placeholder='Bank Name' />
     <input type='text' bind:value={number} placeholder='Account Number' />

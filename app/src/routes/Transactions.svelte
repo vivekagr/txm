@@ -1,9 +1,6 @@
 <script>
     import XLSX from 'xlsx';
-    import { query } from 'svelte-apollo';
-
     import { extractTransactionsFromSheet, transformTransactionList } from '../utils'
-    import { client } from '../apollo';
 
     let rows;
 

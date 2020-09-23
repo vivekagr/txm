@@ -14,11 +14,3 @@
 	<Router {routes} />
 </body>
 
-<style>
-    body {
-        text-align: center;
-        padding: 1em;
-        max-width: 960px;
-        margin: 0 auto;
-    }
-</style>
