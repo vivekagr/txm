@@ -4,25 +4,26 @@ create schema app;
 create schema app_private;
 
 create table app.currency (
-    code        text primary key,
-    name        text not null
+    id          serial primary key,
+    code        text not null unique,
+    name        text not null unique
 );
 
-create type app.account_type as enum (
-    'savings_account',
-    'current_account',
-    'credit_card',
-    'forex_card'
+create table app.account_type (
+    id          serial primary key,
+    name        text not null unique
 );
 
 create table app.account (
     id              serial primary key,
-    slug            text not null unique check(char_length(slug) < 10),
     bank            text not null,
     number          text,
-    type            app.account_type,
-    currency        text not null references app.currency(code)
+    account_type_id integer not null references app.account_type,
+    currency_id     integer not null references app.currency,
+    created_ts      timestamp not null default current_timestamp
 );
+create index on app.account (account_type_id);
+create index on app.account (currency_id);
 
 create table app.transaction_category (
     id              serial primary key,
@@ -32,24 +33,28 @@ create table app.transaction_category (
 
 create table app.transaction_import (
     id              serial primary key,
-    account         integer not null references app.account(id),
+    account_id      integer not null references app.account,
     ts              timestamp not null default current_timestamp
 );
+create index on app.transaction_import(account_id);
 
 create table app.transaction (
     id              serial primary key,
-    account         integer not null references app.account(id),
+    account_id      integer not null references app.account,
 
     amount          money not null,
     is_credit       boolean not null,
     date            date not null,
 
     fx_amount       money,
-    fx_currency     text references app.currency(code),
+    fx_currency_id  integer references app.currency,
 
     narration_text  text not null,
     reference_text  text,
     notes           text,
 
-    category        integer references app.transaction_category(id)
+    transaction_category_id     integer references app.transaction_category
 );
+create index on app.transaction(account_id);
+create index on app.transaction(fx_currency_id);
+create index on app.transaction(transaction_category_id);
