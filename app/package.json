@@ -9,6 +9,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
+    "@tailwindcss/custom-forms": "^0.2.1",
     "apollo-boost": "^0.4.9",
     "graphql": "^14.7.0",
     "rollup": "^2.3.4",

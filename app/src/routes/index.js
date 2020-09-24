@@ -3,8 +3,8 @@ import Transactions from './Transactions.svelte';
 
 const routes = {
     '/': Accounts,
-    '/accounts/:account?': Accounts,
-    '/transactions/:account?': Transactions
+    '/accounts/:accountId?': Accounts,
+    '/transactions/:accountId?': Transactions
 }
 
 export default routes;

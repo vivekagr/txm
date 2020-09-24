@@ -33,9 +33,11 @@ export const ACCOUNTS = gql`
                 bank
                 number
                 accountType {
+                    id
                     name
                 }
                 currency {
+                    id
                     code
                     name
                 }
@@ -54,9 +56,11 @@ export const ADD_ACCOUNT = gql`
                 bank
                 number
                 accountType {
+                    id
                     name
                 }
                 currency {
+                    id
                     code
                     name
                 }
