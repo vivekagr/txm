@@ -4,6 +4,7 @@
     import { CURRENCIES, ACCOUNT_TYPES, ACCOUNTS, ADD_ACCOUNT } from '../../queries';
 
     export let account;
+    export let cancelCallback;
 
     let formData = {};
     $: formEnabled = formData.number && formData.bank && formData.currencyId && formData.accountTypeId;
@@ -106,8 +107,9 @@
             </select>
         </div>
 
-        <button class='mt-5 inline-block px-4 py-2 disabled:opacity-50 bg-green-200 text-green-500 border-green-400 border-b rounded hover:text-green-600 hover:border-green-600 transition-colors duration-200' type='submit' disabled={!formEnabled}>
-            Create
+        <button class={account ? 'btn btn-blue' : 'btn btn-green'} type='submit' disabled={!formEnabled}>
+            {account ? 'Update' : 'Create'}
         </button>
+        <button class='btn ml-1' on:click={cancelCallback}>Cancel</button>
     </form>
 </div>

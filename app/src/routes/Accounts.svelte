@@ -29,20 +29,23 @@
     </h1>
     {#if account}
     <span class='inline-block mx-1'>&gt;</span>
-    <span class='font-bold text-green-700'>{account.bank}-{account.number}</span>
-    <button class="inline-block float-right text-xs bg-blue-200 text-blue-600 px-2 py-1 ml-2 rounded border-blue-400 border-b" on:click={toggleForm}>Edit Account</button>
+    <span class='font-bold text-green-700'>{account.bank} –– {account.number}</span>
+    <button class="btn-plain btn-plain-blue ml-2 float-right" on:click={toggleForm} disabled={formVisible}>Edit Account</button>
     {:else}
-    <button class="inline-block float-right font-bold uppercase text-sm text-green-500 ml-2 border-b-2 border-green-200 hover:border-green-700 hover:text-green-700 transition-colors duration-200" on:click={toggleForm}>Create Account</button>
+    <button class="btn-plain ml-2 float-right" on:click={toggleForm} disabled={formVisible}>Create Account</button>
     {/if}
 </div>
 
 {#if formVisible}
-    <AccountForm account={account} />
+    <AccountForm account={account} cancelCallback={toggleForm} />
 {/if}
 
 <div class="mt-5">
 {#if account}
-abc
+    <p>Bank: {account.bank}</p>
+    <p>Account Number: {account.number}</p>
+    <p>Currency: {account.currency.name}</p>
+    <p>Type: {account.accountType.name}</p>
 {:else}
     {#await $accounts}
         <p>Loading accounts...</p>
