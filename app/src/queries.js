@@ -74,6 +74,17 @@ const QUERIES = {
     }
     `
   },
+  TRANSACTION_IMPORTS: {
+    ADD: gql`
+      mutation importTransactions($accountId: Int!, $transactions: [TransactionTypeInput!]!) {
+        importTransactions(input: {accountId: $accountId, transactions: $transactions}) {
+          transactionImport {
+            id
+          }
+        }
+      }
+    `
+  }
 }
 
 export default QUERIES;

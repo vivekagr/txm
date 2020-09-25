@@ -102,11 +102,15 @@ const createLookupMap = (headers) => {
   return map;
 }
 
-const clean = s => {
+const _clean = s => {
   let _s = (s || '').trim();
   if (_s === '-') return '';
   return _s;
 }
+
+const _parseFloat = n => parseFloat(n.replace(/,/g, '') || 0);
+
+const _date = x => new Date(Date.parse(x)).toISOString();
 
 // Clean & transform the given transaction objects into standard transaction object format
 export function transformTransactionList(headers, txs) {
@@ -115,11 +119,11 @@ export function transformTransactionList(headers, txs) {
   const transformedTxs = txs.flatMap(tx => {
     if (/^\*+$/.test(tx[headerLookupMap['date']])) return []
     return {
-      date: clean(tx[headerLookupMap['date']]),
-      narration: clean(tx[headerLookupMap['narration']]),
-      reference: clean(tx[headerLookupMap['reference']]),
-      amount: clean(tx[headerLookupMap['debit']]) || clean(tx[headerLookupMap['credit']]),
-      isCredit: !!clean(tx[headerLookupMap['credit']])
+      date: _date(_clean(tx[headerLookupMap['date']])),
+      narrationText: _clean(tx[headerLookupMap['narration']]),
+      referenceText: _clean(tx[headerLookupMap['reference']]),
+      amount: _parseFloat(_clean(tx[headerLookupMap['debit']]) || _clean(tx[headerLookupMap['credit']])),
+      isCredit: !!_clean(tx[headerLookupMap['credit']])
     }
   })
 

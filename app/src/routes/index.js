@@ -1,10 +1,10 @@
 import Accounts from './Accounts.svelte';
-import Transactions from './Transactions.svelte';
+import TransactionImportNew from './Transactions/TransactionImportNew.svelte';
 
 const routes = {
   '/': Accounts,
   '/accounts/:accountId?': Accounts,
-  '/transactions/:accountId?': Transactions
+  '/transactions/imports/new': TransactionImportNew
 }
 
 export default routes;
