@@ -11,10 +11,6 @@
 
   const nav = [
   {
-    uri: '#/transactions/imports/new',
-    text: 'Import'
-  },
-  {
     uri: '#/transactions/imports/',
     text: 'Imports'
   },

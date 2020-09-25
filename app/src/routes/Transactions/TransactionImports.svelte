@@ -6,15 +6,18 @@
   let imports = query(client, { query: QUERIES.TRANSACTION_IMPORTS.ALL });
 </script>
 
-<h1><span class='heading'>Transaction Imports</span></h1>
+<div>
+  <a href='#/transactions/imports/new' class="btn-plain ml-2 float-right">New Import</a>
+  <h1><a href='#/transactions/imports/' class='heading'>Transaction Imports</a></h1>
+</div>
 
 <table class='table-layout mt-6 w-full'>
-  <thead>
-    <tr>
-      <th class='border font-bold px-4 py-2'>Import Date</th>
-      <th class='border font-bold px-4 py-2'>Account</th>
-      <th class='border font-bold px-4 py-2'>Transactions</th>
-      <th class='border font-bold px-4 py-2'></th>
+  <thead class='text-left font-bold'>
+    <tr class='border-b-2'>
+      <th class='p-4'>Import Date</th>
+      <th class='p-4'>Account</th>
+      <th class='p-4'>Transactions</th>
+      <th class='p-4'></th>
     </tr>
   </thead>
   <tbody>
@@ -22,11 +25,17 @@
       Loading...
     {:then result}
       {#each result.data.transactionImports.nodes as row}
-      <tr>
-        <td class='border px-4 py-2'>{(new Date(Date.parse(row.ts))).toLocaleString()}</td>
-        <td class='border px-4 py-2'><a href={`#/accounts/${row.account.id}`}>{row.account.bank} - {row.account.number} - {row.account.accountType.name}</a></td>
-        <td class='border px-4 py-2'>{row.transactions.totalCount}</td>
-        <td class='border px-4 py-2'><a href={`#/transactions/imports/${row.id}`}>View Transactions</a></td>
+      <tr class='border-b'>
+        <td class='p-4'>{(new Date(Date.parse(row.ts))).toLocaleString()}</td>
+        <td class='p-4'>
+          <a class='btn-plain btn-plain-blue' href={`#/accounts/${row.account.id}`}>
+            {row.account.bank} - {row.account.number} - {row.account.accountType.name
+          }</a>
+        </td>
+        <td class='p-4'>{row.transactions.totalCount}</td>
+        <td class='p-4'>
+          <a class='btn-plain btn-plain-blue' href={`#/transactions/imports/${row.id}`}>Import Details</a>
+        </td>
       </tr>
       {/each}
     {/await}
