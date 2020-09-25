@@ -24,7 +24,7 @@
 <TailwindCss />
 <nav class="border-b-2 border-gray-200">
     <div class="container mx-auto flex justify-between">
-        <div class="px-2 py-3">tsx</div>
+        <div class="px-2 py-3">txm</div>
         <ul>
             {#each nav as item}
             <li class="inline-block">

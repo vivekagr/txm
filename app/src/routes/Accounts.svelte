@@ -25,7 +25,7 @@
 
 <div>
     <h1 class='inline-block'>
-        <a class="inline-block text-lg font-bold border-b-2 border-gray-400 pr-1 hover:border-green-600 transition-colors duration-200" href="#/accounts">Accounts</a>
+        <a class='heading' href='#/accounts'>Accounts</a>
     </h1>
     {#if account}
     <span class='inline-block mx-1'>&gt;</span>
