@@ -75,6 +75,27 @@ const QUERIES = {
     `
   },
   TRANSACTION_IMPORTS: {
+    ALL: gql`
+    query allTransactionImports {
+      transactionImports(orderBy: ID_DESC) {
+        nodes {
+          id
+          ts
+          transactions {
+            totalCount
+          }
+          account {
+            id
+            bank
+            number
+            accountType {
+              name
+            }
+          }
+        }
+      }
+    }
+    `,
     ADD: gql`
       mutation importTransactions($accountId: Int!, $transactions: [TransactionTypeInput!]!) {
         importTransactions(input: {accountId: $accountId, transactions: $transactions}) {

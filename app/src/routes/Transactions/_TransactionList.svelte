@@ -5,12 +5,12 @@
 <table class='table-layout mt-6'>
   <thead>
     <tr>
-      <td class='border font-bold px-4 py-2'>Date</td>
-      <td class='border font-bold px-4 py-2'>Narration</td>
-      <td class='border font-bold px-4 py-2'>Reference</td>
-      <td class='border font-bold px-4 py-2'>Credit</td>
-      <td class='border font-bold px-4 py-2'>Debit</td>
-      <td class='border font-bold px-4 py-2'>Category</td>
+      <th class='border font-bold px-4 py-2'>Date</th>
+      <th class='border font-bold px-4 py-2'>Narration</th>
+      <th class='border font-bold px-4 py-2'>Reference</th>
+      <th class='border font-bold px-4 py-2'>Credit</th>
+      <th class='border font-bold px-4 py-2'>Debit</th>
+      <th class='border font-bold px-4 py-2'>Category</th>
     </tr>
   </thead>
   <tbody>

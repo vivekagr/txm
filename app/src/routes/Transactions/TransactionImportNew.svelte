@@ -46,7 +46,6 @@
       mutation: QUERIES.TRANSACTION_IMPORTS.ADD,
       variables: { accountId, transactions: rows }
     });
-    console.log('res - ', res);
   }
 
 </script>
