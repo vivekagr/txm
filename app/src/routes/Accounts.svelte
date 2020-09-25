@@ -1,7 +1,7 @@
 <script>
     import { getClient, query } from 'svelte-apollo';
     import { push } from 'svelte-spa-router';
-    import { ACCOUNTS } from '../queries';
+    import QUERIES from '../queries';
     import AccountForm from './Accounts/AccountForm.svelte';
 
     export let params = {};
@@ -9,7 +9,7 @@
     let account;
 
     const client = getClient();
-    let accounts = query(client, { query: ACCOUNTS });
+    let accounts = query(client, { query: QUERIES.ACCOUNTS.ALL });
     // try to extract account object if accountId param is available
     $: accounts.result().then(r => {
         if (!params.accountId) return null;

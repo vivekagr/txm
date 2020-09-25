@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { getClient, query, mutate } from 'svelte-apollo';
-    import { CURRENCIES, ACCOUNT_TYPES, ACCOUNTS, ADD_ACCOUNT } from '../../queries';
+    import QUERIES from '../../queries';
 
     export let account;
     export let cancelCallback;
@@ -19,8 +19,8 @@
     }
 
     const client = getClient();
-    let currencies = query(client, { query: CURRENCIES });
-    let accountTypes = query(client, { query: ACCOUNT_TYPES });
+    let currencies = query(client, { query: QUERIES.CURRENCIES.ALL });
+    let accountTypes = query(client, { query: QUERIES.ACCOUNT_TYPES.ALL });
     currencies.result().then(r => {
         formData.currencyId = account ? account.currency.id : r.data.currencies.nodes[0].id;
     });
@@ -30,13 +30,13 @@
 
     async function handleSubmit() {
         const res = await mutate(client, {
-            mutation: ADD_ACCOUNT,
+            mutation: QUERIES.ACCOUNTS.ADD,
             variables: formData,
             update: (cache, {data}) => {
-                const existingAccounts = cache.readQuery({ query: ACCOUNTS });
+                const existingAccounts = cache.readQuery({ query: QUERIES.ACCOUNTS.ALL });
                 const newAccount = data.createAccount.account;
                 cache.writeQuery({
-                    query: ACCOUNTS,
+                    query: QUERIES.ACCOUNTS.ALL,
                     data: {
                         accounts: {
                             nodes: [newAccount, ...existingAccounts.accounts.nodes],
