@@ -58,5 +58,6 @@ create table app.transaction (
 );
 create index on app.transaction(account_id);
 create index on app.transaction(transaction_import_id);
+create index on app.transaction(date);
 create index on app.transaction(fx_currency_id);
 create index on app.transaction(transaction_category_id);
