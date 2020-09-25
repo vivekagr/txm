@@ -89,6 +89,7 @@ const QUERIES = {
             bank
             number
             accountType {
+              id
               name
             }
           }
@@ -96,6 +97,8 @@ const QUERIES = {
       }
     }
     `,
+    // ONE: gql`
+    // `,
     ADD: gql`
       mutation importTransactions($accountId: Int!, $transactions: [TransactionTypeInput!]!) {
         importTransactions(input: {accountId: $accountId, transactions: $transactions}) {
