@@ -107,9 +107,9 @@
       </select>
     </div>
 
-    <button class={account ? 'btn btn-blue' : 'btn btn-green'} type='submit' disabled={!formEnabled}>
+    <button class={account ? 'mt-5 btn btn-blue' : 'mt-5 btn btn-green'} type='submit' disabled={!formEnabled}>
       {account ? 'Update' : 'Create'}
     </button>
-    <button class='btn ml-1' on:click={cancelCallback}>Cancel</button>
+    <button class='btn mt-5 ml-1' on:click={cancelCallback}>Cancel</button>
   </form>
 </div>

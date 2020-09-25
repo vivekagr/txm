@@ -75,7 +75,7 @@
     on:change={handleFileChange}
     />
   </div>
-  <button class="btn btn-green" on:click={uploadTransactions}>Upload</button>
+  <button class="btn btn-green mt-5" on:click={uploadTransactions}>Upload</button>
 </div>
 
 {#if rows}

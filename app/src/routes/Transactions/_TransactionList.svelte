@@ -2,7 +2,7 @@
   export let transactions;
 </script>
 
-<table class='table-layout mt-6'>
+<table class='table-layout w-full mt-6'>
   <thead>
     <tr>
       <th class='border font-bold px-4 py-2'>Date</th>

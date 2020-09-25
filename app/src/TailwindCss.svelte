@@ -9,7 +9,7 @@
   a.heading:hover { @apply border-green-600; }
 
   .btn {
-    @apply mt-5 inline-block px-4 py-2 bg-gray-100 text-gray-500 border-gray-400 border-b rounded transition-colors duration-200;
+    @apply inline-block px-4 py-2 bg-gray-100 text-gray-500 border-gray-400 border-b rounded transition-colors duration-200;
   }
   .btn:focus { outline: none; }
   .btn:hover { @apply text-gray-600 border-gray-600; }

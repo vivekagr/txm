@@ -38,6 +38,6 @@
     </ul>
   </div>
 </nav>
-<div class="container mx-auto mt-5">
+<div class="container mx-auto mt-5 mb-10">
   <Router {routes} />
 </div>
