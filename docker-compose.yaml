@@ -19,7 +19,8 @@ services:
     depends_on:
       - pg
     restart: always
-    command: --connection postgres://postgres:postgrespass@pg/txm
+    command: --connection postgres://app_postgraphile:supersecret@pg/txm
+      --owner-connection postgres://postgres:postgrespass@pg/txm
       --port 5433
       --subscriptions
       --cors
@@ -38,6 +39,9 @@ services:
       --enable-query-batching
       --legacy-relations omit
       --schema app
+      --default-role app_anonymous
+      --jwt-token-identifier app.jwt_token
+      --jwt-secret supersecretforjwt
 
   app:
     build:
