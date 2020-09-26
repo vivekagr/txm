@@ -1,4 +1,5 @@
 import XLSX from 'xlsx';
+import { casual } from 'chrono-node';
 
 
 export function extractTransactionsFromSheet (sheet) {
@@ -110,7 +111,26 @@ const _clean = s => {
 
 const _parseFloat = n => parseFloat(n.replace(/,/g, '') || 0);
 
-const _date = x => new Date(Date.parse(x)).toISOString();
+var customChrono = casual.clone();
+customChrono.parsers.unshift({
+  pattern: () => /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/,
+  extract: (context, match) => {
+    let year = match[3];
+    if (match[3].length == 2) {
+      const todayYear = (new Date()).getUTCFullYear();
+      const todayTwoDigitYear = todayYear % 100;
+      const todayTwoDigitCentury = parseInt(todayYear / 100);
+      const centuryToUse = parseInt(match[3]) > todayTwoDigitYear ? todayTwoDigitCentury-1 : todayTwoDigitCentury;
+      year = String(centuryToUse) + match[3];
+    }
+
+    return {
+      day: match[1],
+      month: match[2],
+      year: year
+    }
+  }
+});
 
 // Clean & transform the given transaction objects into standard transaction object format
 export function transformTransactionList(headers, txs) {
@@ -119,7 +139,7 @@ export function transformTransactionList(headers, txs) {
   const transformedTxs = txs.flatMap(tx => {
     if (/^\*+$/.test(tx[headerLookupMap['date']])) return []
     return {
-      date: _date(_clean(tx[headerLookupMap['date']])),
+      date: customChrono.parseDate(_clean(tx[headerLookupMap['date']])),
       narrationText: _clean(tx[headerLookupMap['narration']]),
       referenceText: _clean(tx[headerLookupMap['reference']]),
       amount: _parseFloat(_clean(tx[headerLookupMap['debit']]) || _clean(tx[headerLookupMap['credit']])),
