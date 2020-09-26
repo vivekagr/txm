@@ -11,13 +11,27 @@ create table app.user (
   name        text not null check(char_length(name) < 100),
   created_ts  timestamp not null default current_timestamp
 );
-grant select on table app.user to app_anonymous, app_user;
-grant update, delete on table app.user to app_user;
+-- only allow app_user role to query, update and delete records
+grant select, update, delete on table app.user to app_user;
+-- enable row level security for user table
+alter table app.user enable row level security;
+-- allow select, update & delete on user's own rows only
+-- note: we won't allow inserts since that's being handled by app.register_user function below
+create policy select_user on app.user for select
+  to app_user
+  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+create policy update_user on app.user for update
+  to app_user
+  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+create policy delete_user on app.user for delete
+  to app_user
+  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
 
 create table app_private.user (
   user_id       integer primary key references app.user(id) on delete cascade,
   password_hash text not null
 );
+comment on table app_private.user is 'Used to keep password hash in a separate schema & table';
 
 create or replace function app.register_user(username text, name text, password text)
   returns app.user as $$
@@ -35,6 +49,7 @@ begin
   return u;
 end;
 $$ language plpgsql strict security definer;
+comment on function app.register_user(text, text, text) is 'User registration function, returns user object.';
 grant execute on function app.register_user(text, text, text) to app_anonymous;
 
 create or replace function app.authenticate(username text, password text)
@@ -60,6 +75,7 @@ begin
   end if;
 end;
 $$ language plpgsql strict security definer;
+comment on function app.authenticate(text, text) is 'User authentication function that returns JWT token, given valid credentials.';
 grant execute on function app.authenticate(text, text) to app_anonymous, app_user;
 
 create or replace function app.current_user() returns app.user as $$
@@ -67,4 +83,5 @@ create or replace function app.current_user() returns app.user as $$
     from app.user
     where id = nullif(current_setting('jwt.claims.user_id', true), '')::integer
 $$ language sql stable;
+comment on function app.current_user is 'Get current user object, if logged in.';
 grant execute on function app.current_user() to app_anonymous, app_user;
