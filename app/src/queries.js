@@ -102,6 +102,36 @@ const QUERIES = {
       }
     `
   },
+
+  TRANSACTION: {
+    SEARCH: gql`
+      query transactionsSearch($accountId: Int, $searchQuery: String) {
+        transactionsSearch(accountId: $accountId, searchQuery: $searchQuery) {
+          totalCount
+          nodes {
+            id
+            amount
+            date
+            fxAmount
+            fxCurrency {
+              id
+              code
+              name
+            }
+            isCredit
+            narrationText
+            notes
+            referenceText
+            transactionCategory {
+              name
+              id
+            }
+          }
+        }
+      }
+    `
+  },
+
   TRANSACTION_IMPORTS: {
     ALL: gql`
       query allTransactionImports {

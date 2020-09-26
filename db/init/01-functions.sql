@@ -28,3 +28,33 @@ begin
   return tx_import;
 end;
 $$ language plpgsql volatile;
+
+-- create or replace function app.search_transactions(account_id int, search_query text) returns setof app.transaction as $$
+--   select * from app.transaction where account_id = $1 and transaction_searchable @@ to_tsquery($2);
+-- $$ language sql stable;
+
+-- create or replace function app.search_transactions(search_query text) returns setof app.transaction as $$
+--   select * from app.transaction where transaction_searchable @@ to_tsquery($1);
+-- $$ language sql stable;
+
+create or replace function app.transactions_search (account_id int, search_query text)
+returns setof app.transaction as $$
+begin
+  if $1 is not null and $2 is not null then
+    return query
+      select * from app.transaction
+        where app.transaction.account_id = $1 and transaction_searchable @@ to_tsquery($2)
+        order by date desc;
+  elsif $1 is null then
+    return query
+      select * from app.transaction
+        where transaction_searchable @@ to_tsquery($2)
+        order by date desc;
+  else
+    return query
+      select * from app.transaction
+        where app.transaction.account_id = $1
+        order by date desc;
+  end if;
+end;
+$$ language plpgsql immutable;

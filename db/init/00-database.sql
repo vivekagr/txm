@@ -58,6 +58,10 @@ create table app.transaction (
 );
 create index on app.transaction(account_id);
 create index on app.transaction(transaction_import_id);
-create index on app.transaction(date);
+create index on app.transaction(date desc);
 create index on app.transaction(fx_currency_id);
 create index on app.transaction(transaction_category_id);
+
+alter table app.transaction add column transaction_searchable tsvector
+  generated always as (to_tsvector('english', (coalesce(narration_text, '') || ' ' || coalesce(reference_text, '') || ' ' || coalesce(notes, '')))) stored;
+create index transaction_searchable_idx on app.transaction using gin (transaction_searchable);
