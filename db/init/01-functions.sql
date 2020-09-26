@@ -58,3 +58,44 @@ begin
   end if;
 end;
 $$ language plpgsql immutable;
+
+
+create type app.transaction_category_type as (
+  id        integer,
+  name      text,
+  parents   integer[],
+  level     integer
+);
+
+create or replace function app.all_categories()
+returns setof app.transaction_category_type as $$
+  with recursive transaction_category_hierarchy as (
+    select id, name, '{}'::int[] as parents, 0 as level
+      from app.transaction_category
+      where parent_id is null
+
+    union all
+
+    select tc.id, tc.name, parents || tc.parent_id, level+1
+      from transaction_category_hierarchy tch
+      join app.transaction_category tc
+      on tc.parent_id = tch.id
+      where not tc.id = any(parents)
+  )
+  select id, name, parents, level from transaction_category_hierarchy;
+$$ language sql immutable;
+
+-- with recursive transaction_category_hierarchy as (
+--   select id, name, '{}'::int[] as parents, 0 as level
+--     from app.transaction_category
+--     where parent_id is null
+
+--   union all
+
+--   select tc.id, tc.name, parents || tc.parent_id, level+1
+--     from transaction_category_hierarchy tch
+--     join app.transaction_category tc
+--     on tc.parent_id = tch.id
+--     where not tc.id = any(parents)
+-- )
+-- select name, id, parents, level from transaction_category_hierarchy;

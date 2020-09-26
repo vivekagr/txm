@@ -27,9 +27,11 @@ create index on app.account (currency_id);
 
 create table app.transaction_category (
   id              serial primary key,
-  slug            text not null unique check(char_length(slug) < 20),
-  name            text not null
+  name            text not null,
+  rules           text[],
+  parent_id       integer references app.transaction_category
 );
+create index on app.transaction_category (parent_id);
 
 create table app.transaction_import (
   id              serial primary key,
