@@ -13,14 +13,9 @@ create index on app.account (currency_id);
 
 -- only allow app_user role to run queries on this table
 grant insert, select, update, delete on table app.account to app_user;
+grant usage on app.account_id_seq to app_user;
 
 alter table app.account enable row level security;
 
-create policy insert_account on app.account for insert to app_user
-  with check (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
-create policy select_account on app.account for select to app_user
-  using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
-create policy update_account on app.account for update to app_user
-  using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
-create policy delete_account on app.account for delete to app_user
+create policy account on app.account for all to app_user
   using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);

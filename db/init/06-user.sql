@@ -15,15 +15,9 @@ create table app.user (
 grant select, update, delete on table app.user to app_user;
 -- enable row level security for user table
 alter table app.user enable row level security;
--- allow select, update & delete on user's own rows only
+-- add policy to check id
 -- note: we won't allow inserts since that's being handled by app.register_user function below
-create policy select_user on app.user for select
-  to app_user
-  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
-create policy update_user on app.user for update
-  to app_user
-  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
-create policy delete_user on app.user for delete
+create policy policy_user on app.user for all
   to app_user
   using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
 

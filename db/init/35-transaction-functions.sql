@@ -19,7 +19,9 @@ declare
   tx app.transaction_type;
   tx_import app.transaction_import;
 begin
-  insert into app.transaction_import (account_id) values (account_id) returning * into tx_import;
+  insert into app.transaction_import (account_id, user_id) values
+    (account_id, nullif(current_setting('jwt.claims.user_id', true), '')::integer)
+    returning * into tx_import;
   foreach tx in array transactions loop
     insert into app.transaction
       (account_id, transaction_import_id, amount, is_credit, date, fx_amount, fx_currency_id, narration_text, reference_text, notes, transaction_category_id)
@@ -28,6 +30,8 @@ begin
   return tx_import;
 end;
 $$ language plpgsql volatile;
+
+grant execute on function app.import_transactions(int, app.transaction_type[]) to app_user;
 
 -- create or replace function app.search_transactions(account_id int, search_query text) returns setof app.transaction as $$
 --   select * from app.transaction where account_id = $1 and transaction_searchable @@ to_tsquery($2);
@@ -59,6 +63,8 @@ begin
 end;
 $$ language plpgsql immutable;
 
+grant execute on function app.transactions_search(int, text) to app_user;
+
 
 create type app.transaction_category_type as (
   id        integer,
@@ -84,6 +90,8 @@ returns setof app.transaction_category_type as $$
   )
   select id, name, parents, level from transaction_category_hierarchy;
 $$ language sql immutable;
+
+grant execute on function app.all_categories() to app_user;
 
 -- with recursive transaction_category_hierarchy as (
 --   select id, name, '{}'::int[] as parents, 0 as level
