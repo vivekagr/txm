@@ -3,8 +3,8 @@
   import { query, mutation } from 'svelte-apollo';
   import QUERIES from '../../queries';
 
-  export let account;
-  export let cancelCallback;
+  export let account = null;
+  export let cancelCallback = null;
 
   let formData = {};
   $: formEnabled = formData.number && formData.bank && formData.currencyId && formData.accountTypeId;
@@ -20,7 +20,9 @@
 
   let currencies = query(QUERIES.CURRENCIES.ALL);
   let accountTypes = query(QUERIES.ACCOUNT_TYPES.ALL);
-  const addAccount = mutation(QUERIES.ACCOUNTS.ADD);
+
+  const createAccountMutation = mutation(QUERIES.ACCOUNTS.CREATE);
+  const updateAccountMutation = mutation(QUERIES.ACCOUNTS.UPDATE);
 
   currencies.result().then(r => {
     formData.currencyId = account ? account.currency.id : r.data.currencies.nodes[0].id;
@@ -30,23 +32,34 @@
   });
 
   async function handleSubmit() {
-    const res = await addAccount({
-      variables: formData,
-      update: (cache, {data}) => {
-        const existingAccounts = cache.readQuery({ query: QUERIES.ACCOUNTS.ALL });
-        const newAccount = data.createAccount.account;
-        cache.writeQuery({
-          query: QUERIES.ACCOUNTS.ALL,
-          data: {
-            accounts: {
-              nodes: [newAccount, ...existingAccounts.accounts.nodes],
-              totalCount: existingAccounts.accounts.totalCount + 1,
-              __typename: existingAccounts.accounts.__typename
-            },
-          }
-        });
-      }
-    })
+    if (account) {
+      await updateAccountMutation({
+        variables: {
+          ...formData,
+          id: account.id
+        }
+      })
+    } else {
+      await createAccountMutation({
+        variables: formData,
+        update: (cache, {data}) => {
+          const existingAccounts = cache.readQuery({ query: QUERIES.ACCOUNTS.ALL });
+          const newAccount = data.createAccount.account;
+          cache.writeQuery({
+            query: QUERIES.ACCOUNTS.ALL,
+            data: {
+              accounts: {
+                ...existingAccounts.accounts,
+                nodes: [newAccount, ...existingAccounts.accounts.nodes],
+                totalCount: existingAccounts.accounts.totalCount + 1
+              },
+            }
+          });
+        }
+      })
+    }
+    if (cancelCallback)
+      cancelCallback()
   }
 
   // Focus first field on mount
@@ -110,6 +123,6 @@
     <button class={account ? 'mt-5 btn btn-blue' : 'mt-5 btn btn-green'} type='submit' disabled={!formEnabled}>
       {account ? 'Update' : 'Create'}
     </button>
-    <button class='btn mt-5 ml-1' on:click={cancelCallback}>Cancel</button>
+    <button class='btn mt-5 ml-1' type='button' on:click={cancelCallback}>Cancel</button>
   </form>
 </div>

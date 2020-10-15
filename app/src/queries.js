@@ -1,5 +1,22 @@
 import { gql } from '@apollo/client';
 
+const ACCOUNT_FRAGMENT = gql`
+  fragment AccountParts on Account {
+    id
+    bank
+    number
+    accountType {
+      id
+      name
+    }
+    currency {
+      id
+      code
+      name
+    }
+  }
+`
+
 const QUERIES = {
   ACCOUNT_TYPES: {
     ALL: gql`
@@ -31,73 +48,43 @@ const QUERIES = {
 
   ACCOUNTS: {
     ALL: gql`
-      {
+      query allAccounts {
         accounts(orderBy: ID_DESC) {
           totalCount
           nodes {
-            id
-            bank
-            number
-            accountType {
-              id
-              name
-            }
-            currency {
-              id
-              code
-              name
-            }
+            ...AccountParts
           }
         }
       }
+      ${ACCOUNT_FRAGMENT}
     `,
-    ADD: gql`
-      mutation addAccount($bank: String!, $number: String!, $accountTypeId: Int!, $currencyId: Int!) {
+    CREATE: gql`
+      mutation createAccount($bank: String!, $number: String!, $accountTypeId: Int!, $currencyId: Int!) {
         createAccount(input: { bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId }) {
           account {
-            id
-            bank
-            number
-            accountType {
-              id
-              name
-            }
-            currency {
-              id
-              code
-              name
-            }
+            ...AccountParts
           }
         }
       }
+      ${ACCOUNT_FRAGMENT}
+    `,
+    UPDATE: gql`
+      mutation updateAccount($id: Int!, $bank: String, $number: String, $accountTypeId: Int, $currencyId: Int) {
+        updateAccount(input: { id: $id, patch: { bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId } }) {
+          account {
+            ...AccountParts
+          }
+        }
+      }
+      ${ACCOUNT_FRAGMENT}
     `,
     ONE: gql`
       query accountById($id: Int!) {
         account(id: $id) {
-          transactions(orderBy: DATE_DESC) {
-            totalCount
-            nodes {
-              id
-              amount
-              date
-              fxAmount
-              fxCurrency {
-                id
-                code
-                name
-              }
-              isCredit
-              narrationText
-              notes
-              referenceText
-              transactionCategory {
-                name
-                id
-              }
-            }
-          }
+          ...AccountParts
         }
       }
+      ${ACCOUNT_FRAGMENT}
     `
   },
 
@@ -158,13 +145,7 @@ const QUERIES = {
         transactionImport(id: $id) {
           id
           account {
-            id
-            bank
-            currency {
-              id
-              code
-            }
-            number
+            ...AccountParts
           }
           transactions {
             totalCount
@@ -190,6 +171,7 @@ const QUERIES = {
           }
         }
       }
+      ${ACCOUNT_FRAGMENT}
     `,
     ADD: gql`
       mutation importTransactions($accountId: Int!, $transactions: [TransactionTypeInput!]!) {
