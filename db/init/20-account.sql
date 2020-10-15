@@ -8,8 +8,13 @@ create table app.account (
   created_ts      timestamp not null default current_timestamp
 );
 
+create index on app.account (user_id);
 create index on app.account (account_type_id);
 create index on app.account (currency_id);
+
+-- disable postgraphile's create function, there's a custom create_account function
+comment on table app.account is
+  E'@omit create';
 
 -- only allow app_user role to run queries on this table
 grant insert, select, update, delete on table app.account to app_user;
