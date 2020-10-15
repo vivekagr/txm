@@ -16,6 +16,9 @@ create index on app.account (currency_id);
 comment on table app.account is
   E'@omit create';
 
+comment on column app.account.user_id is
+  E'@omit';
+
 -- only allow app_user role to run queries on this table
 grant insert, select, update, delete on table app.account to app_user;
 grant usage on app.account_id_seq to app_user;
