@@ -1,14 +1,14 @@
 <script>
   import XLSX from 'xlsx';
-  import { getClient, query, mutate } from 'svelte-apollo';
+  import { query, mutation } from 'svelte-apollo';
   import QUERIES from '../../queries';
   import { extractTransactionsFromSheet, transformTransactionList } from './utils'
   import TransactionList from './_TransactionList.svelte';
 
   export let accountId;
 
-  const client = getClient();
-  let accounts = query(client, { query: QUERIES.ACCOUNTS.ALL });
+  let accounts = query(QUERIES.ACCOUNTS.ALL);
+  const transactionImportMutation = mutation(QUERIES.TRANSACTION_IMPORTS.ADD)
 
   accounts.result().then(r => {
     if (!accountId && r.data.accounts.nodes.length)
@@ -42,8 +42,7 @@
   }
 
   async function uploadTransactions() {
-    const res = await mutate(client, {
-      mutation: QUERIES.TRANSACTION_IMPORTS.ADD,
+    const res = await transactionImportMutation({
       variables: { accountId, transactions: rows }
     });
   }
@@ -56,13 +55,15 @@
   <div class='mr-5 mt-5 inline-block'>
     <label for='account' class='text-gray-600'>Select Account</label>
     <select class='form-select block mt-1' id='account' bind:value={accountId}>
-      {#await $accounts}
-      Loading...
-      {:then result}
-        {#each result.data.accounts.nodes as a}
+      {#if $accounts.loading}
+        Loading...
+      {:else if $accounts.error}
+        Error: {$accounts.error}
+      {:else if $accounts.data}
+        {#each $accounts.data.accounts.nodes as a}
           <option value={a.id}>{a.bank} – {a.number} ({a.currency.code.toUpperCase()})</option>
         {/each}
-      {/await}
+      {/if}
     </select>
   </div>
   <div class="mr-5 mt-5 inline-block">

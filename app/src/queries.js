@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from '@apollo/client';
 
 const QUERIES = {
   ACCOUNT_TYPES: {
@@ -53,9 +53,7 @@ const QUERIES = {
     `,
     ADD: gql`
       mutation addAccount($bank: String!, $number: String!, $accountTypeId: Int!, $currencyId: Int!) {
-        createAccount(input: { account: {
-          bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId
-        } }) {
+        createAccount(input: { bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId }) {
           account {
             id
             bank

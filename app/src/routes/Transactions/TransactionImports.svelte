@@ -1,9 +1,8 @@
 <script>
-  import { query, getClient } from 'svelte-apollo';
+  import { query } from 'svelte-apollo';
   import QUERIES from '../../queries';
 
-  const client = getClient();
-  let imports = query(client, { query: QUERIES.TRANSACTION_IMPORTS.ALL });
+  let imports = query(QUERIES.TRANSACTION_IMPORTS.ALL);
 </script>
 
 <div>
@@ -21,10 +20,10 @@
     </tr>
   </thead>
   <tbody>
-    {#await $imports}
+    {#if $imports.loading}
       Loading...
-    {:then result}
-      {#each result.data.transactionImports.nodes as row}
+    {:else if $imports.data}
+      {#each $imports.data.transactionImports.nodes as row}
       <tr class='border-b'>
         <td class='p-4'>{(new Date(Date.parse(row.ts))).toLocaleString()}</td>
         <td class='p-4'>
@@ -38,6 +37,6 @@
         </td>
       </tr>
       {/each}
-    {/await}
+    {/if}
   </tbody>
 </table>

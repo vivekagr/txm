@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { getClient, query, mutate } from 'svelte-apollo';
+  import { query, mutation } from 'svelte-apollo';
   import QUERIES from '../../queries';
 
   export let account;
@@ -18,9 +18,10 @@
     }
   }
 
-  const client = getClient();
-  let currencies = query(client, { query: QUERIES.CURRENCIES.ALL });
-  let accountTypes = query(client, { query: QUERIES.ACCOUNT_TYPES.ALL });
+  let currencies = query(QUERIES.CURRENCIES.ALL);
+  let accountTypes = query(QUERIES.ACCOUNT_TYPES.ALL);
+  const addAccount = mutation(QUERIES.ACCOUNTS.ADD);
+
   currencies.result().then(r => {
     formData.currencyId = account ? account.currency.id : r.data.currencies.nodes[0].id;
   });
@@ -29,8 +30,7 @@
   });
 
   async function handleSubmit() {
-    const res = await mutate(client, {
-      mutation: QUERIES.ACCOUNTS.ADD,
+    const res = await addAccount({
       variables: formData,
       update: (cache, {data}) => {
         const existingAccounts = cache.readQuery({ query: QUERIES.ACCOUNTS.ALL });
@@ -84,26 +84,26 @@
     <div class='mr-5 mt-5 inline-block'>
       <label for='currency' class='text-gray-600'>Currency</label>
       <select id='currency' class='form-select block mt-1' bind:value={formData.currencyId}>
-        {#await $currencies}
-        Loading...
-        {:then result}
-        {#each result.data.currencies.nodes as currency}
-        <option value={currency.id}>{currency.name}</option>
-        {/each}
-        {/await}
+        {#if $currencies.loading}
+          Loading...
+        {:else if $currencies.data}
+          {#each $currencies.data.currencies.nodes as currency}
+          <option value={currency.id}>{currency.name}</option>
+          {/each}
+        {/if}
       </select>
     </div>
 
     <div class='mr-5 mt-5 inline-block'>
       <label for='account-type' class='text-gray-600'>Account Type</label>
       <select class='form-select block mt-1' bind:value={formData.accountTypeId} id='account-type'>
-        {#await $accountTypes}
-        Loading...
-        {:then result}
-        {#each result.data.accountTypes.nodes as accountType}
-        <option value={accountType.id}>{accountType.name}</option>
-        {/each}
-        {/await}
+        {#if $accountTypes.loading}
+          Loading...
+        {:else if $accountTypes.data}
+          {#each $accountTypes.data.accountTypes.nodes as accountType}
+          <option value={accountType.id}>{accountType.name}</option>
+          {/each}
+        {/if}
       </select>
     </div>
 
