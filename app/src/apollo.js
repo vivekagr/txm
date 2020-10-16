@@ -1,10 +1,12 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+import { onError } from "@apollo/client/link/error"
 import authToken from './stores/auth'
+import errors from './stores/errors'
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:5433/graphql',
-});
+})
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -22,10 +24,24 @@ const authLink = setContext((_, { headers }) => {
       authorization: `Bearer ${token}`,
     }
   }
-});
+})
+
+const errorHandlerLink = onError(({ graphQLErrors, networkError, response }) => {
+  if (graphQLErrors) {
+    errors.add('An error occurred, please refresh the page & try again')
+  } else if (networkError) {
+    errors.add('Network error')
+  }
+})
+
+const link = from([
+  authLink,
+  errorHandlerLink,
+  httpLink
+])
 
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link,
   cache: new InMemoryCache({
     typePolicies: {
       TransactionImport: {
