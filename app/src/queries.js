@@ -40,6 +40,14 @@ const TRANSACTION_FRAGMENT = gql`
 `
 
 const QUERIES = {
+  AUTHENTICATE: gql`
+    mutation Authenticate($username: String!, $password: String!) {
+      authenticate(input: {username: $username, password: $password}) {
+        jwtToken
+      }
+    }
+  `,
+
   ACCOUNT_TYPES: {
     ALL: gql`
       query AccountTypes {
