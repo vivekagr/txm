@@ -1,3 +1,4 @@
+import { replace } from 'svelte-spa-router'
 import wrap from 'svelte-spa-router/wrap'
 
 import Accounts from './Accounts.svelte';
@@ -15,7 +16,11 @@ const requireAuth = component => wrap({
   conditions: [() => authToken.isValid()]
 })
 
-const routes = {
+export function conditionsFailed(event) {
+  replace(`/login?next=${event.detail.route}`)
+}
+
+export const routes = {
   '/': requireAuth(Accounts),
   '/login': AuthLogin,
   '/logout': AuthLogout,
@@ -25,5 +30,3 @@ const routes = {
   // '/transactions/imports/new': TransactionImportNew,
   '/transactions/imports/:id': requireAuth(TransactionImportDetail),
 }
-
-export default routes;
