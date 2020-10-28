@@ -1,8 +1,8 @@
 <script>
   import { query } from 'svelte-apollo';
   import { push } from 'svelte-spa-router';
-  import QUERIES from '../queries';
-  import AccountForm from './Accounts/AccountForm.svelte';
+  import QUERIES from '../../queries';
+  import AccountForm from './AccountForm.svelte';
 
   const accounts = query(QUERIES.ACCOUNTS.ALL);
 
