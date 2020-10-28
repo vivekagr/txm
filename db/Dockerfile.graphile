@@ -1,7 +1,10 @@
-FROM node:alpine
+FROM node:15.0.1-alpine3.11
 
 # Install PostGraphile and plugins
-RUN npm install -g postgraphile postgraphile-plugin-connection-filter @graphile-contrib/pg-simplify-inflector
+RUN npm install -g \
+    postgraphile@4.9.2 \
+    postgraphile-plugin-connection-filter@2.1.0 \
+    @graphile-contrib/pg-simplify-inflector@6.1.0
 
 EXPOSE 5000
 ENTRYPOINT ["postgraphile", "-n", "0.0.0.0"]
