@@ -1,30 +1,40 @@
 {
   "name": "txm",
   "version": "0.0.1",
+  "license": "MIT",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w --single",
-    "start": "sirv public"
+    "dev": "rollup -c -w",
+    "start": "sirv public",
+    "prettier:check": "yarn run prettier --check src/",
+    "prettier:write": "yarn run prettier --write src/"
   },
   "devDependencies": {
-    "@apollo/client": "^3",
     "@rollup/plugin-commonjs": "^15",
     "@rollup/plugin-node-resolve": "^9",
-    "@tailwindcss/custom-forms": "^0.2",
-    "chrono-node": "^2",
-    "graphql": "^15",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "prettier": "2.1.2",
+    "prettier-plugin-svelte": "^1.4.1",
     "rollup": "^2",
     "rollup-plugin-livereload": "^2",
     "rollup-plugin-svelte": "^6",
     "rollup-plugin-terser": "^7",
+    "svelte-preprocess": "^4"
+  },
+  "dependencies": {
+    "@apollo/client": "^3",
+    "@tailwindcss/custom-forms": "^0.2",
+    "chrono-node": "^2",
+    "graphql": "^15",
+    "sirv-cli": "^1.0.0",
     "svelte": "^3",
     "svelte-apollo": "^0.4",
-    "svelte-preprocess": "^4",
     "svelte-spa-router": "^3",
     "tailwindcss": "^1.9",
     "xlsx": "^0.16"
-  },
-  "dependencies": {
-    "sirv-cli": "^1.0.0"
   }
 }
