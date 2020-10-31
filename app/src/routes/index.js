@@ -5,7 +5,6 @@ import Accounts from './Accounts/AccountList.svelte';
 import AccountDetail from './Accounts/AccountDetail.svelte';
 import TransactionImports from './Transactions/TransactionImports.svelte';
 import TransactionImportDetail from './Transactions/TransactionImportDetail.svelte';
-// import TransactionImportNew from './Transactions/TransactionImportNew.svelte';
 import AuthLogin from './Auth/Login.svelte';
 import AuthLogout from './Auth/Logout.svelte';
 import authToken from '../stores/auth'
@@ -27,6 +26,9 @@ export const routes = {
   '/accounts': requireAuth(Accounts),
   '/accounts/:id': requireAuth(AccountDetail),
   '/transactions/imports': requireAuth(TransactionImports),
-  // '/transactions/imports/new': TransactionImportNew,
+  '/transactions/imports/new': wrap({
+    asyncComponent: () => import('./Transactions/TransactionImportNew.svelte'),
+    conditions: [() => authToken.isValid()],
+  }),
   '/transactions/imports/:id': requireAuth(TransactionImportDetail),
 }
