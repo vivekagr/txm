@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import { onError } from "@apollo/client/link/error"
+import { onError } from '@apollo/client/link/error'
 import authToken from './stores/auth'
 import errors from './stores/errors'
 
@@ -10,11 +10,11 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = authToken.get();
+  const token = authToken.get()
 
   if (!token)
     return {
-      headers
+      headers,
     }
 
   // return the headers to the context so httpLink can read them
@@ -22,11 +22,11 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: `Bearer ${token}`,
-    }
+    },
   }
 })
 
-const errorHandlerLink = onError(({ graphQLErrors, networkError, response }) => {
+const errorHandlerLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     errors.add('An error occurred, please refresh the page & try again')
   } else if (networkError) {
@@ -34,13 +34,9 @@ const errorHandlerLink = onError(({ graphQLErrors, networkError, response }) => 
   }
 })
 
-const link = from([
-  authLink,
-  errorHandlerLink,
-  httpLink
-])
+const link = from([authLink, errorHandlerLink, httpLink])
 
-export const client = new ApolloClient({
+const client = new ApolloClient({
   link,
   cache: new InMemoryCache({
     typePolicies: {
@@ -50,8 +46,8 @@ export const client = new ApolloClient({
           // transactions data (loaded on list page) by merging it
           transactions: {
             merge: true,
-          }
-        }
+          },
+        },
       },
       Query: {
         fields: {
@@ -60,11 +56,13 @@ export const client = new ApolloClient({
           account(_, { args, toReference }) {
             return toReference({
               __typename: 'Account',
-              id: args.id
+              id: args.id,
             })
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   }),
-});
+})
+
+export default client

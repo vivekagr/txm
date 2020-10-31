@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
 
 const ACCOUNT_FRAGMENT = gql`
   fragment AccountParts on Account {
@@ -42,7 +42,7 @@ const TRANSACTION_FRAGMENT = gql`
 const QUERIES = {
   AUTHENTICATE: gql`
     mutation Authenticate($username: String!, $password: String!) {
-      authenticate(input: {username: $username, password: $password}) {
+      authenticate(input: { username: $username, password: $password }) {
         jwtToken
       }
     }
@@ -58,7 +58,7 @@ const QUERIES = {
           }
         }
       }
-    `
+    `,
   },
 
   CURRENCIES: {
@@ -73,7 +73,7 @@ const QUERIES = {
           }
         }
       }
-    `
+    `,
   },
 
   ACCOUNTS: {
@@ -89,8 +89,20 @@ const QUERIES = {
       ${ACCOUNT_FRAGMENT}
     `,
     CREATE: gql`
-      mutation CreateAccount($bank: String!, $number: String!, $accountTypeId: Int!, $currencyId: Int!) {
-        createAccount(input: { bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId }) {
+      mutation CreateAccount(
+        $bank: String!
+        $number: String!
+        $accountTypeId: Int!
+        $currencyId: Int!
+      ) {
+        createAccount(
+          input: {
+            bank: $bank
+            number: $number
+            accountTypeId: $accountTypeId
+            currencyId: $currencyId
+          }
+        ) {
           account {
             ...AccountParts
           }
@@ -99,8 +111,24 @@ const QUERIES = {
       ${ACCOUNT_FRAGMENT}
     `,
     UPDATE: gql`
-      mutation UpdateAccount($id: Int!, $bank: String, $number: String, $accountTypeId: Int, $currencyId: Int) {
-        updateAccount(input: { id: $id, patch: { bank: $bank, number: $number, accountTypeId: $accountTypeId, currencyId: $currencyId } }) {
+      mutation UpdateAccount(
+        $id: Int!
+        $bank: String
+        $number: String
+        $accountTypeId: Int
+        $currencyId: Int
+      ) {
+        updateAccount(
+          input: {
+            id: $id
+            patch: {
+              bank: $bank
+              number: $number
+              accountTypeId: $accountTypeId
+              currencyId: $currencyId
+            }
+          }
+        ) {
           account {
             ...AccountParts
           }
@@ -115,7 +143,7 @@ const QUERIES = {
         }
       }
       ${ACCOUNT_FRAGMENT}
-    `
+    `,
   },
 
   TRANSACTION: {
@@ -129,7 +157,7 @@ const QUERIES = {
         }
       }
       ${TRANSACTION_FRAGMENT}
-    `
+    `,
   },
 
   TRANSACTION_IMPORTS: {
@@ -171,14 +199,14 @@ const QUERIES = {
     `,
     ADD: gql`
       mutation ImportTransactions($accountId: Int!, $transactions: [TransactionTypeInput!]!) {
-        importTransactions(input: {accountId: $accountId, transactions: $transactions}) {
+        importTransactions(input: { accountId: $accountId, transactions: $transactions }) {
           transactionImport {
             id
           }
         }
       }
-    `
-  }
+    `,
+  },
 }
 
-export default QUERIES;
+export default QUERIES

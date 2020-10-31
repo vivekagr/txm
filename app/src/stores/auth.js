@@ -17,17 +17,16 @@ function jwtStore() {
         if (!token) return false
 
         const { exp } = JSON.parse(atob(token.split('.')[1]))
-        if (exp < Date.now()/1000) {
+        if (exp < Date.now() / 1000) {
           // Reset store before returning false
           this.reset()
           return false
-        } else {
-          return true
         }
+        return true
       } catch (e) {
         return false
       }
-    }
+    },
   }
 }
 

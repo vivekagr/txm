@@ -1,6 +1,6 @@
 <script>
-  import errors from './stores/errors'
   import { slide } from 'svelte/transition'
+  import errors from './stores/errors'
 </script>
 
 <div class="fixed bottom-0 right-0">

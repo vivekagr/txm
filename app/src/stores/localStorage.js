@@ -12,26 +12,24 @@ export default function writable(key, defaultValue = null) {
 
   // Check existing value in localStorage
   const existingValue = localStorage.getItem(key)
-  if (existingValue)
-    store.set(JSON.parse(existingValue))
-  else
-    localStorage.setItem(key, JSON.stringify(defaultValue))
+  if (existingValue) store.set(JSON.parse(existingValue))
+  else localStorage.setItem(key, JSON.stringify(defaultValue))
 
   return {
     set(value) {
-      localStorage.setItem(key, JSON.stringify(value));
-      store.set(value);
+      localStorage.setItem(key, JSON.stringify(value))
+      store.set(value)
     },
     get() {
-      let value = localStorage.getItem(key)
-      return value ? JSON.parse(value) : defaultValue;
+      const value = localStorage.getItem(key)
+      return value ? JSON.parse(value) : defaultValue
     },
     reset() {
-      this.set(defaultValue);
+      this.set(defaultValue)
     },
     update(cb) {
-      this.set(cb(this.get()));
+      this.set(cb(this.get()))
     },
-    subscribe: store.subscribe
+    subscribe: store.subscribe,
   }
 }

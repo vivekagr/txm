@@ -1,14 +1,14 @@
 <script>
-  import { setClient } from 'svelte-apollo';
-  import Router from 'svelte-spa-router';
-  import TailwindCss from './TailwindCss.svelte';
+  import { setClient } from 'svelte-apollo'
+  import Router from 'svelte-spa-router'
+  import TailwindCss from './TailwindCss.svelte'
 
-  import { routes, conditionsFailed } from './routes/';
-  import { client } from './apollo';
-  import Nav from './Nav.svelte';
-  import Errors from './Errors.svelte';
+  import { routes, conditionsFailed } from './routes'
+  import apolloClient from './apollo'
+  import Nav from './Nav.svelte'
+  import Errors from './Errors.svelte'
 
-  setClient(client);
+  setClient(apolloClient)
 </script>
 
 <TailwindCss />
