@@ -1,7 +1,8 @@
 <script>
   import { query } from 'svelte-apollo'
+
+  import QUERIES from 'app/queries'
   import TransactionList from './_TransactionList.svelte'
-  import QUERIES from '../../queries'
 
   export let params = {}
 

@@ -1,13 +1,16 @@
 /* eslint-disable global-require */
+import path from 'path';
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import alias from '@rollup/plugin-alias';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import tailwind from 'tailwindcss';
 
 const production = !process.env.ROLLUP_WATCH;
+const projectRootDir = path.resolve(__dirname);
 
 function serve() {
   let server;
@@ -54,6 +57,12 @@ export default {
           ]
         },
       }),
+    }),
+
+    alias({
+      entries: [
+        { find: 'app', replacement: path.resolve(projectRootDir, 'src') }
+      ]
     }),
 
     // If you have external dependencies installed from

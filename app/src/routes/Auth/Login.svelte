@@ -2,8 +2,8 @@
   import { mutation } from 'svelte-apollo'
   import { replace } from 'svelte-spa-router'
 
-  import QUERIES from '../../queries'
-  import authToken from '../../stores/auth'
+  import QUERIES from 'app/queries'
+  import authToken from 'app/stores/auth'
 
   const authMutation = mutation(QUERIES.AUTHENTICATE)
 

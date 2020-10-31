@@ -36,4 +36,14 @@ module.exports = {
       { avoidEscape: true, allowTemplateLiterals: false }
     ]
   },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['app', './src'],
+        ],
+        extensions: ['.js', '.svelte'],
+      }
+    },
+  },
 };

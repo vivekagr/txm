@@ -1,6 +1,7 @@
 <script>
   import { query } from 'svelte-apollo'
-  import QUERIES from '../../queries'
+
+  import QUERIES from 'app/queries'
   import TransactionList from '../Transactions/_TransactionList.svelte'
   import AccountForm from './AccountForm.svelte'
 

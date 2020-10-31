@@ -1,7 +1,8 @@
 <script>
   import XLSX from 'xlsx'
   import { query, mutation } from 'svelte-apollo'
-  import QUERIES from '../../queries'
+
+  import QUERIES from 'app/queries'
   import { extractTransactionsFromSheet, transformTransactionList } from './utils'
   import TransactionList from './_TransactionList.svelte'
 

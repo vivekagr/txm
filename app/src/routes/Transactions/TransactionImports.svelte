@@ -1,6 +1,7 @@
 <script>
   import { query } from 'svelte-apollo'
-  import QUERIES from '../../queries'
+
+  import QUERIES from 'app/queries'
 
   const imports = query(QUERIES.TRANSACTION_IMPORTS.ALL)
 </script>

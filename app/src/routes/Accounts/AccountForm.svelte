@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte'
   import { query, mutation } from 'svelte-apollo'
-  import QUERIES from '../../queries'
+
+  import QUERIES from 'app/queries'
 
   export let account = null
   export let cancelCallback = null
