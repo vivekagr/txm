@@ -9,7 +9,7 @@ export function extractTransactionsFromSheet(sheet) {
     end: { encoded: null, decoded: null },
   }
 
-  const headerCell = Object.entries(sheet).find(([cellIndex, cell]) => {
+  const headerCell = Object.entries(sheet).find(([, cell]) => {
     const cellValue = cell.w || cell.v
     return cellValue && ['date', 'txn date'].indexOf(cellValue.toString().trim().toLowerCase()) > -1
   })

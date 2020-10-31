@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const production = !process.env.ROLLUP_WATCH;
 
 module.exports = {
@@ -7,10 +8,10 @@ module.exports = {
   },
   purge: {
     content: [
-      "./src/**/*.svelte",
-      "./public/**/*.html"
+      './src/**/*.svelte',
+      './public/**/*.html'
     ],
-    css: ["./public/**/*.css"],
+    css: ['./public/**/*.css'],
     enabled: production // disable purge in dev
   },
   theme: {

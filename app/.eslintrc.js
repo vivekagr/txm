@@ -24,8 +24,9 @@ module.exports = {
       rules: {
         'import/first': 0,
         'import/no-duplicates': 0,
-        'import/no-mutable-exports': 0
-      }
+        'import/no-mutable-exports': 0,
+        'import/prefer-default-export': 0,
+      },
     },
   ],
   rules: {
