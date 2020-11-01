@@ -14,7 +14,7 @@ grant insert, select, update, delete on table app.transaction_category to app_us
 alter table app.transaction_category enable row level security;
 
 create policy transaction_category on app.transaction_category for all to app_user
-  using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+  using (user_id = app.current_user_id());
 
 -------
 
@@ -34,7 +34,7 @@ grant usage on app.transaction_import_id_seq to app_user;
 alter table app.transaction_import enable row level security;
 
 create policy transaction_import on app.transaction_import for all to app_user
-  using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+  using (user_id = app.current_user_id());
 
 --------
 
@@ -74,4 +74,4 @@ alter table app.transaction enable row level security;
 create policy transaction on app.transaction for all to app_user
   using (exists (
     select 1 from app.account
-      where app.account.id = account_id and app.account.user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer));
+      where app.account.id = account_id and app.account.user_id = app.current_user_id()));

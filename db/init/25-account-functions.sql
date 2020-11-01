@@ -4,7 +4,7 @@ create function app.create_account(bank text, number text, account_type_id int, 
 returns app.account
 as $$
   insert into app.account (user_id, bank, number, account_type_id, currency_id) values
-    (nullif(current_setting('jwt.claims.user_id', true), '')::integer, bank, number, account_type_id, currency_id)
+    (app.current_user_id(), bank, number, account_type_id, currency_id)
     returning *;
 $$ language sql strict volatile;
 

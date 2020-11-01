@@ -20,7 +20,7 @@ declare
   tx_import app.transaction_import;
 begin
   insert into app.transaction_import (account_id, user_id) values
-    (account_id, nullif(current_setting('jwt.claims.user_id', true), '')::integer)
+    (account_id, app.current_user_id())
     returning * into tx_import;
   foreach tx in array transactions loop
     insert into app.transaction

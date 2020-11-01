@@ -15,3 +15,8 @@ grant app_user to app_postgraphile;
 -- doesn't allow full access, just allows these roles to know about
 -- the existence of app schema and that they 'may' access objects in it
 grant usage on schema app to app_anonymous, app_user;
+
+create or replace function app.current_user_id() returns integer as $$
+  select nullif(current_setting('jwt.claims.user_id', true), '')::integer;
+$$ language sql stable;
+grant execute on function app.current_user_id() to app_anonymous, app_user;

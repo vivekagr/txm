@@ -19,7 +19,11 @@ alter table app.user enable row level security;
 -- note: we won't allow inserts since that's being handled by app.register_user function below
 create policy policy_user on app.user for all
   to app_user
-  using (id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+  using (id = app.current_user_id());
+
+-- don't expose user table over graphql
+comment on table app.user is
+  E'@omit';
 
 create table app_private.user (
   user_id       integer primary key references app.user(id) on delete cascade,
@@ -75,7 +79,7 @@ grant execute on function app.authenticate(text, text) to app_anonymous, app_use
 create or replace function app.current_user() returns app.user as $$
   select *
     from app.user
-    where id = nullif(current_setting('jwt.claims.user_id', true), '')::integer
+    where id = app.current_user_id()
 $$ language sql stable;
 comment on function app.current_user is 'Get current user object, if logged in.';
 grant execute on function app.current_user() to app_anonymous, app_user;

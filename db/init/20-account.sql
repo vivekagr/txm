@@ -26,4 +26,4 @@ grant usage on app.account_id_seq to app_user;
 alter table app.account enable row level security;
 
 create policy account on app.account for all to app_user
-  using (user_id = nullif(current_setting('jwt.claims.user_id', true), '')::integer);
+  using (user_id = app.current_user_id());
