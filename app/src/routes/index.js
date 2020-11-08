@@ -1,7 +1,7 @@
 import { replace } from 'svelte-spa-router'
 import wrap from 'svelte-spa-router/wrap'
 
-import authToken from 'app/stores/auth'
+import { authToken } from 'app/stores'
 import Accounts from './Accounts/AccountList.svelte'
 import AccountDetail from './Accounts/AccountDetail.svelte'
 import TransactionImports from './Transactions/TransactionImports.svelte'

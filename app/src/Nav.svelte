@@ -22,11 +22,11 @@
   ]
 </script>
 
-<script>
+<script lang="ts">
   import { sineIn, sineOut } from 'svelte/easing'
   import { link } from 'svelte-spa-router'
   import active from 'svelte-spa-router/active'
-  import authToken from './stores/auth'
+  import { authToken } from './stores'
 
   $: nav = $authToken ? USER_NAV : ANON_NAV
 

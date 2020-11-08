@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { replace } from 'svelte-spa-router'
 
-  import authToken from 'app/stores/auth'
+  import { authToken } from 'app/stores'
 
   onMount(async () => {
     authToken.reset()

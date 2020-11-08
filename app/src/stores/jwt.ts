@@ -2,12 +2,16 @@
  * Auth token store.
  */
 
-import localStorageWritable from './localStorage'
+import { localStorageStore, LocalStorageStore } from './localStorage'
+
+export interface JWTStore extends LocalStorageStore {
+  isValid: () => boolean
+}
 
 // jwt store wrapping local storage store with method for checking
 // validity of the token based on the expiry value on it
-function jwtStore() {
-  const store = localStorageWritable('authJwt')
+export function jwtStore(): JWTStore {
+  const store = localStorageStore('authJwt')
 
   return {
     ...store,
@@ -29,6 +33,3 @@ function jwtStore() {
     },
   }
 }
-
-const authToken = jwtStore()
-export default authToken
