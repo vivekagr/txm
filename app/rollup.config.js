@@ -7,6 +7,7 @@ import alias from '@rollup/plugin-alias';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
 import tailwind from 'tailwindcss';
 
 const production = !process.env.ROLLUP_WATCH;
@@ -34,7 +35,7 @@ function serve() {
 }
 
 export default {
-  input: 'src/main.js',
+  input: 'src/main.ts',
   output: {
     sourcemap: true,
     format: 'es',
@@ -76,6 +77,10 @@ export default {
       dedupe: ['svelte']
     }),
     commonjs(),
+		typescript({
+			sourceMap: !production,
+			inlineSources: !production
+		}),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated

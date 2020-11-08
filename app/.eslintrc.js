@@ -42,7 +42,7 @@ module.exports = {
         map: [
           ['app', './src'],
         ],
-        extensions: ['.js', '.svelte'],
+        extensions: ['.js', '.ts', '.svelte'],
       }
     },
   },

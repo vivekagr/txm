@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { setClient } from 'svelte-apollo'
   import Router from 'svelte-spa-router'
   import TailwindCss from './TailwindCss.svelte'
