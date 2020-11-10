@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-    "strictFunctionTypes": false
+    "strictFunctionTypes": false,
+    "baseUrl": "./src",
+    "paths": {
+      "app/*": ["./*"]
+    }
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": ["src/**/*"],

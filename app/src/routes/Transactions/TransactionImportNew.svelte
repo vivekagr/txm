@@ -1,12 +1,13 @@
-<script>
-  import XLSX from 'xlsx'
+<script lang="ts">
   import { query, mutation } from 'svelte-apollo'
 
+  import type { Transaction } from 'app/data/transactions'
+  import { parseSheet } from 'app/utils/sheets'
+
   import QUERIES from 'app/queries'
-  import { extractTransactionsFromSheet, transformTransactionList } from './utils'
   import TransactionList from './_TransactionList.svelte'
 
-  export let accountId
+  export let accountId: number
 
   const accounts = query(QUERIES.ACCOUNTS.ALL)
   const transactionImportMutation = mutation(QUERIES.TRANSACTION_IMPORTS.ADD)
@@ -15,31 +16,10 @@
     if (!accountId && r.data.accounts.nodes.length) accountId = r.data.accounts.nodes[0].id
   })
 
-  let rows
+  let rows: Transaction[]
 
-  const readFileAsArrayBufferAsync = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = reject
-      reader.readAsArrayBuffer(file)
-    })
-
-  async function parseSheet(file) {
-    // read given file as ArrayBuffer
-    const dataArrayBuffer = await readFileAsArrayBufferAsync(file)
-    // read the file as workbook & get the main sheet
-    const workbook = XLSX.read(dataArrayBuffer, { type: 'array', raw: true })
-    const sheet = workbook.Sheets[workbook.SheetNames[0]]
-
-    // extract transaction from the sheet (that might contain non-transaction information)
-    // and transform+clean it into a usable data
-    const { headers, data } = extractTransactionsFromSheet(sheet)
-    rows = transformTransactionList(headers, data)
-  }
-
-  function handleFileChange(e) {
-    parseSheet(e.target.files[0])
+  async function handleFileChange(e) {
+    rows = await parseSheet(e.target.files[0])
   }
 
   async function uploadTransactions() {
