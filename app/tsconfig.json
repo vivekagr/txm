@@ -3,6 +3,7 @@
     "noImplicitAny": true,
     "strictFunctionTypes": false,
     "baseUrl": "./src",
+    "module": "es2020",
     "paths": {
       "app/*": ["./*"]
     }
