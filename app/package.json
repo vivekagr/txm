@@ -7,6 +7,8 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "eslint": "eslint ./src",
+    "typegen": "apollo client:codegen --target=typescript --endpoint=http://localhost:5433/graphql --outputFlat ./src/data/types",
+    "typegen:watch": "apollo client:codegen --target=typescript --endpoint=http://localhost:5433/graphql --outputFlat --watch ./src/data/types",
     "prettier:check": "prettier --check src/",
     "prettier:write": "prettier --write src/",
     "validate": "svelte-check"
@@ -19,6 +21,7 @@
     "@tsconfig/svelte": "^1",
     "@typescript-eslint/eslint-plugin": "^4",
     "@typescript-eslint/parser": "^4",
+    "apollo": "^2",
     "eslint": "^7",
     "eslint-config-airbnb-typescript": "^12",
     "eslint-config-prettier": "^6",

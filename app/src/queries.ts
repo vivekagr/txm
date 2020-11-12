@@ -51,7 +51,9 @@ const QUERIES = {
   REGISTER: gql`
     mutation RegisterUser($username: String!, $name: String!, $password: String!) {
       registerUser(input: { username: $username, name: $name, password: $password }) {
-        jwtToken
+        user {
+          id
+        }
       }
     }
   `,
