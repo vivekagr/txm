@@ -1,14 +1,24 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte'
   import { query, mutation } from 'svelte-apollo'
 
+  import type { Currencies } from 'app/data/types/Currencies'
+  import type { Account_account } from 'app/data/types/Account'
+  import type { Accounts } from 'app/data/types/Accounts'
+  import type { AccountTypes } from 'app/data/types/AccountTypes'
+  import type { CreateAccount, CreateAccountVariables } from 'app/data/types/CreateAccount'
+  import type { UpdateAccount, UpdateAccountVariables } from 'app/data/types/UpdateAccount'
   import QUERIES from 'app/queries'
 
-  export let account = null
-  export let cancelCallback = null
+  export let account: Account_account
+  export let cancelCallback: () => void
 
-  let formData = {}
-  $: formEnabled = formData.number && formData.bank && formData.currencyId && formData.accountTypeId
+  function isAccountFormValid(arg: any): arg is CreateAccountVariables {
+    return !!(arg.number && arg.bank && arg.currencyId && arg.accountTypeId)
+  }
+
+  let formData: Partial<CreateAccountVariables> = {}
+  $: formEnabled = isAccountFormValid(formData)
 
   if (account) {
     formData = {
@@ -19,11 +29,15 @@
     }
   }
 
-  const currencies = query(QUERIES.CURRENCIES.ALL)
-  const accountTypes = query(QUERIES.ACCOUNT_TYPES.ALL)
+  const currencies = query<Currencies>(QUERIES.CURRENCIES.ALL)
+  const accountTypes = query<AccountTypes>(QUERIES.ACCOUNT_TYPES.ALL)
 
-  const createAccountMutation = mutation(QUERIES.ACCOUNTS.CREATE)
-  const updateAccountMutation = mutation(QUERIES.ACCOUNTS.UPDATE)
+  const createAccountMutation = mutation<CreateAccount, CreateAccountVariables>(
+    QUERIES.ACCOUNTS.CREATE
+  )
+  const updateAccountMutation = mutation<UpdateAccount, UpdateAccountVariables>(
+    QUERIES.ACCOUNTS.UPDATE
+  )
 
   currencies.result().then((r) => {
     formData.currencyId = account ? account.currency.id : r.data.currencies.nodes[0].id
@@ -33,6 +47,8 @@
   })
 
   async function handleSubmit() {
+    if (!isAccountFormValid(formData)) return
+
     if (account) {
       await updateAccountMutation({
         variables: {
@@ -44,7 +60,7 @@
       await createAccountMutation({
         variables: formData,
         update: (cache, { data }) => {
-          const existingAccounts = cache.readQuery({ query: QUERIES.ACCOUNTS.ALL })
+          const existingAccounts = cache.readQuery<Accounts>({ query: QUERIES.ACCOUNTS.ALL })
           const newAccount = data.createAccount.account
           cache.writeQuery({
             query: QUERIES.ACCOUNTS.ALL,
@@ -63,7 +79,7 @@
   }
 
   // Focus first field on mount
-  let firstInput
+  let firstInput: HTMLElement
   onMount(() => firstInput.focus())
 </script>
 

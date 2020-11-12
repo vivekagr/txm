@@ -1,14 +1,22 @@
-<script>
+<script lang="ts">
   import { query } from 'svelte-apollo'
 
   import QUERIES from 'app/queries'
+  import type {
+    TransactionImport,
+    TransactionImportVariables,
+  } from 'app/data/types/TransactionImport'
+
   import TransactionList from './_TransactionList.svelte'
 
-  export let params = {}
+  export let params: { id: string }
 
-  const transactionImport = query(QUERIES.TRANSACTION_IMPORTS.ONE, {
-    variables: { id: parseInt(params.id, 10) },
-  })
+  const transactionImport = query<TransactionImport, TransactionImportVariables>(
+    QUERIES.TRANSACTION_IMPORTS.ONE,
+    {
+      variables: { id: parseInt(params.id, 10) },
+    }
+  )
 </script>
 
 <div>

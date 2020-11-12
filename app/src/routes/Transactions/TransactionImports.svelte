@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
   import { query } from 'svelte-apollo'
 
   import QUERIES from 'app/queries'
+  import type { TransactionImports } from 'app/data/types/TransactionImports'
 
-  const imports = query(QUERIES.TRANSACTION_IMPORTS.ALL)
+  const imports = query<TransactionImports>(QUERIES.TRANSACTION_IMPORTS.ALL)
 </script>
 
 <div>

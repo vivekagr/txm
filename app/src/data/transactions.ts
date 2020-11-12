@@ -1,7 +1,9 @@
 export interface Transaction {
+  id?: number
   date: Date
-  narrationText?: string
-  referenceText?: string
   amount: number
   isCredit: boolean
+  narrationText?: string
+  referenceText?: string
+  notes?: string
 }

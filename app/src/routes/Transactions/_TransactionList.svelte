@@ -1,5 +1,7 @@
-<script>
-  export let transactions
+<script lang="ts">
+  import type { Transaction } from 'app/data/transactions'
+
+  export let transactions: Transaction[]
 </script>
 
 <table class="table-layout w-full mt-6">

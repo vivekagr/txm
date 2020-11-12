@@ -1,4 +1,5 @@
-import { replace } from 'svelte-spa-router'
+import type { SvelteComponent } from 'svelte'
+import { replace, RouterEvent, RouteDetail, RouteDefinition } from 'svelte-spa-router'
 import wrap from 'svelte-spa-router/wrap'
 
 import { authToken } from 'app/stores'
@@ -10,17 +11,17 @@ import AuthLogin from './Auth/Login.svelte'
 import AuthLogout from './Auth/Logout.svelte'
 
 // Wrapper around given component that checks for valid auth token
-const requireAuth = (component) =>
+const requireAuth = (component: typeof SvelteComponent) =>
   wrap({
     component,
     conditions: [() => authToken.isValid()],
   })
 
-export function conditionsFailed(event) {
+export function conditionsFailed(event: RouterEvent<RouteDetail>): void {
   replace(`/login?next=${event.detail.route}`)
 }
 
-export const routes = {
+export const routes: RouteDefinition = {
   '/': requireAuth(Accounts),
   '/login': AuthLogin,
   '/logout': AuthLogout,

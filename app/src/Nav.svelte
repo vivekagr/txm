@@ -1,5 +1,10 @@
-<script context="module">
-  const USER_NAV = [
+<script context="module" lang="ts">
+  interface RouteDefinition {
+    uri: string
+    text: string
+  }
+
+  const USER_NAV: RouteDefinition[] = [
     {
       uri: '/transactions/imports',
       text: 'Imports',
@@ -10,7 +15,7 @@
     },
   ]
 
-  const ANON_NAV = [
+  const ANON_NAV: RouteDefinition[] = [
     {
       uri: '/signup',
       text: 'Signup',
@@ -20,9 +25,32 @@
       text: 'Login',
     },
   ]
+
+  interface DropdownParams {
+    duration: number
+    in?: boolean
+  }
+
+  function dropdown(
+    _node: HTMLElement,
+    { duration, in: isIn = false }: DropdownParams
+  ): TransitionConfig {
+    return {
+      duration,
+      css: (t: number): string => {
+        const eased = isIn ? sineIn(t) : sineOut(t)
+
+        return `
+          transform: scale(${0.95 + eased * 0.05});
+          opacity: ${eased};
+        `
+      },
+    }
+  }
 </script>
 
 <script lang="ts">
+  import type { TransitionConfig } from 'svelte/transition'
   import { sineIn, sineOut } from 'svelte/easing'
   import { link } from 'svelte-spa-router'
   import active from 'svelte-spa-router/active'
@@ -38,20 +66,6 @@
   function windowClick() {
     if (profileDropdownVisible) {
       profileDropdownVisible = false
-    }
-  }
-
-  function dropdown(node, { duration, in: isIn = false }) {
-    return {
-      duration,
-      css: (t) => {
-        const eased = isIn ? sineIn(t) : sineOut(t)
-
-        return `
-          transform: scale(${0.95 + eased * 0.05});
-          opacity: ${eased};
-        `
-      },
     }
   }
 </script>
@@ -95,9 +109,9 @@
                 viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width={2}
                   d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>

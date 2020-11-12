@@ -2,15 +2,22 @@
   import { query, mutation } from 'svelte-apollo'
 
   import type { Transaction } from 'app/data/transactions'
+  import type { Accounts } from 'app/data/types/Accounts'
+  import type {
+    ImportTransactions,
+    ImportTransactionsVariables,
+  } from 'app/data/types/ImportTransactions'
   import { parseSheet } from 'app/utils/sheets'
-
   import QUERIES from 'app/queries'
+
   import TransactionList from './_TransactionList.svelte'
 
   export let accountId: number
 
-  const accounts = query(QUERIES.ACCOUNTS.ALL)
-  const transactionImportMutation = mutation(QUERIES.TRANSACTION_IMPORTS.ADD)
+  const accounts = query<Accounts>(QUERIES.ACCOUNTS.ALL)
+  const transactionImportMutation = mutation<ImportTransactions, ImportTransactionsVariables>(
+    QUERIES.TRANSACTION_IMPORTS.ADD
+  )
 
   accounts.result().then((r) => {
     if (!accountId && r.data.accounts.nodes.length) accountId = r.data.accounts.nodes[0].id
@@ -18,8 +25,12 @@
 
   let rows: Transaction[]
 
-  async function handleFileChange(e) {
-    rows = await parseSheet(e.target.files[0])
+  interface FileChangeEvent extends Event {
+    currentTarget: EventTarget & { files: FileList }
+  }
+
+  async function handleFileChange(event: FileChangeEvent) {
+    rows = await parseSheet(event.currentTarget.files[0])
   }
 
   async function uploadTransactions() {

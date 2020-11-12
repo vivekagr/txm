@@ -1,26 +1,39 @@
-<script>
+<script lang="ts">
   import { query } from 'svelte-apollo'
 
   import QUERIES from 'app/queries'
+  import type { Account, AccountVariables } from 'app/data/types/Account'
+  import type {
+    TransactionsSearch,
+    TransactionsSearchVariables,
+  } from 'app/data/types/TransactionsSearch'
+
   import TransactionList from '../Transactions/_TransactionList.svelte'
   import AccountForm from './AccountForm.svelte'
 
-  export let params = {}
+  interface AccountDetailParams {
+    id?: string
+  }
 
-  let searchQuery = null
+  export let params: AccountDetailParams = {}
 
-  const account = query(QUERIES.ACCOUNTS.ONE, {
+  let searchQuery: string | null = null
+
+  const account = query<Account, AccountVariables>(QUERIES.ACCOUNTS.ONE, {
     variables: {
       id: parseInt(params.id, 10),
     },
   })
 
-  $: transactions = query(QUERIES.TRANSACTION.SEARCH, {
-    variables: {
-      accountId: parseInt(params.id, 10),
-      searchQuery: searchQuery || null,
-    },
-  })
+  $: transactions = query<TransactionsSearch, TransactionsSearchVariables>(
+    QUERIES.TRANSACTION.SEARCH,
+    {
+      variables: {
+        accountId: parseInt(params.id, 10),
+        searchQuery: searchQuery || null,
+      },
+    }
+  )
 
   let formVisible = false
   function toggleForm() {
