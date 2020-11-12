@@ -6,12 +6,12 @@
 
 import { writable as baseWritable, Writable } from 'svelte/store'
 
-export interface LocalStorageStore extends Writable<any> {
-  get: () => any
+export interface LocalStorageStore<T> extends Writable<T> {
+  get: () => T
   reset: () => void
 }
 
-export function localStorageStore(key: string, defaultValue: any = null): LocalStorageStore {
+export function localStorageStore<T = string>(key: string, defaultValue: T): LocalStorageStore<T> {
   // Initialise writable store with given default value
   const store = baseWritable(defaultValue)
 
@@ -21,18 +21,18 @@ export function localStorageStore(key: string, defaultValue: any = null): LocalS
   else localStorage.setItem(key, JSON.stringify(defaultValue))
 
   return {
-    set(value: any) {
+    set(value: T) {
       localStorage.setItem(key, JSON.stringify(value))
       store.set(value)
     },
-    get(): any {
+    get(): T {
       const value = localStorage.getItem(key)
       return value ? JSON.parse(value) : defaultValue
     },
     reset() {
       this.set(defaultValue)
     },
-    update(cb: (v: any) => any) {
+    update(cb: (v: T) => T) {
       this.set(cb(this.get()))
     },
     subscribe: store.subscribe,

@@ -4,14 +4,14 @@
 
 import { localStorageStore, LocalStorageStore } from './localStorage'
 
-export interface JWTStore extends LocalStorageStore {
+export interface JWTStore extends LocalStorageStore<string> {
   isValid: () => boolean
 }
 
 // jwt store wrapping local storage store with method for checking
 // validity of the token based on the expiry value on it
 export function jwtStore(): JWTStore {
-  const store = localStorageStore('authJwt')
+  const store = localStorageStore<string>('authJwt', '')
 
   return {
     ...store,

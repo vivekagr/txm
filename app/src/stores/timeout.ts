@@ -1,17 +1,17 @@
 import { writable, Readable } from 'svelte/store'
 
-export interface TimeoutStore extends Readable<any> {
-  add: (value: any) => void
+export interface TimeoutStore<T> extends Readable<T[]> {
+  add: (value: T) => void
 }
 
-export function timeoutStore(timeout: number): TimeoutStore {
-  const { subscribe, update } = writable([])
+export function timeoutStore<T>(timeout: number): TimeoutStore<T> {
+  const { subscribe, update } = writable<T[]>([])
 
   const removeOneItem = () => update((items) => items.slice(1))
 
   return {
     subscribe,
-    add(item: any) {
+    add(item: T) {
       update((items) => items.concat(item))
       setTimeout(removeOneItem, timeout)
     },
