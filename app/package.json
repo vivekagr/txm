@@ -48,7 +48,7 @@
     "sirv-cli": "^1",
     "svelte": "^3",
     "svelte-apollo": "^0.4",
-    "svelte-spa-router": "^3",
+    "svelte-spa-router": "https://github.com/ItalyPaleAle/svelte-spa-router.git#0638180",
     "tailwindcss": "^1.9",
     "xlsx": "^0.16"
   }

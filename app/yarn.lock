@@ -906,7 +906,7 @@ apollo-utilities@^1.3.0:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
-apollo@^2.31.1:
+apollo@^2:
   version "2.31.1"
   resolved "https://registry.yarnpkg.com/apollo/-/apollo-2.31.1.tgz#a04149d1bdd309cedb374531d413d53ee257bc45"
   integrity sha512-qx64LGc09GSwpEIUbRJX90zq6ixVsgo6ZPGuCsDTY83Lz5ITMeXIs7+CF/1oAU1IzEI+YRMVsFTkK2aIBZzSYA==
@@ -4025,10 +4025,9 @@ svelte-preprocess@^4, svelte-preprocess@^4.0.0:
     detect-indent "^6.0.0"
     strip-indent "^3.0.0"
 
-svelte-spa-router@^3:
+"svelte-spa-router@https://github.com/ItalyPaleAle/svelte-spa-router.git#0638180":
   version "3.0.5"
-  resolved "https://registry.yarnpkg.com/svelte-spa-router/-/svelte-spa-router-3.0.5.tgz#097506578ac2371c9556b9789bd397d408968d92"
-  integrity sha512-MewNP2IoKcnFBZ5Ni1Ntrow+Enx2rS2lY9hGOWE0ZIHGf/8AhUhpoHQ7a5iv0cAIEUxYVJ480X9GIEURsjfDGA==
+  resolved "https://github.com/ItalyPaleAle/svelte-spa-router.git#0638180343f96fee768d707de34d29455b27ab31"
   dependencies:
     regexparam "1.3.0"
 
