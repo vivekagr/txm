@@ -21,16 +21,16 @@
   async function handleSubmit() {
     wrongCredentials = false
 
-    const {
-      data: {
-        authenticate: { jwtToken },
-      },
-    } = await authMutation({
+    if (!formData.username || !formData.password) return
+
+    const res = await authMutation({
       variables: {
         username: formData.username,
         password: formData.password,
       },
     })
+
+    const jwtToken = res.data?.authenticate?.jwtToken
 
     if (!jwtToken) {
       wrongCredentials = true

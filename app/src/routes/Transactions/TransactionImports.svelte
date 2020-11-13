@@ -25,16 +25,18 @@
     {#if $imports.loading}
       Loading...
     {:else if $imports.data}
-      {#each $imports.data.transactionImports.nodes as row}
+      {#each $imports.data?.transactionImports?.nodes || [] as row}
         <tr class="border-b">
           <td class="p-4">{new Date(Date.parse(row.ts)).toLocaleString()}</td>
           <td class="p-4">
-            <a class="btn-plain btn-plain-blue" href={`#/accounts/${row.account.id}`}>
-              {row.account.bank}
-              -
-              {row.account.number}
-              -
-              {row.account.accountType.name}</a>
+            {#if row.account && row.account.accountType}
+              <a class="btn-plain btn-plain-blue" href={`#/accounts/${row.account.id}`}>
+                {row.account.bank}
+                -
+                {row.account.number}
+                -
+                {row.account.accountType.name}</a>
+            {/if}
           </td>
           <td class="p-4">{row.transactions.totalCount}</td>
           <td class="p-4">

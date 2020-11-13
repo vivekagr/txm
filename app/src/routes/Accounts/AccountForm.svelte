@@ -10,7 +10,7 @@
   import type { UpdateAccount, UpdateAccountVariables } from 'app/data/types/UpdateAccount'
   import QUERIES from 'app/queries'
 
-  export let account: Account_account
+  export let account: Account_account | undefined | null = undefined
   export let cancelCallback: () => void
 
   function isAccountFormValid(arg: any): arg is CreateAccountVariables {
@@ -23,9 +23,9 @@
   if (account) {
     formData = {
       bank: account.bank,
-      number: account.number,
-      currencyId: account.currency.id,
-      accountTypeId: account.accountType.id,
+      number: account.number || undefined,
+      currencyId: account.currency?.id,
+      accountTypeId: account.accountType?.id,
     }
   }
 
@@ -40,10 +40,10 @@
   )
 
   currencies.result().then((r) => {
-    formData.currencyId = account ? account.currency.id : r.data.currencies.nodes[0].id
+    formData.currencyId = account?.currency?.id || r.data.currencies?.nodes[0]?.id
   })
   accountTypes.result().then((r) => {
-    formData.accountTypeId = account ? account.accountType.id : r.data.accountTypes.nodes[0].id
+    formData.accountTypeId = account?.accountType?.id || r.data.accountTypes?.nodes[0]?.id
   })
 
   async function handleSubmit() {
@@ -60,8 +60,10 @@
       await createAccountMutation({
         variables: formData,
         update: (cache, { data }) => {
-          const existingAccounts = cache.readQuery<Accounts>({ query: QUERIES.ACCOUNTS.ALL })
+          if (!data || !data.createAccount) return
           const newAccount = data.createAccount.account
+          const existingAccounts = cache.readQuery<Accounts>({ query: QUERIES.ACCOUNTS.ALL })
+          if (!existingAccounts || !existingAccounts.accounts) return
           cache.writeQuery({
             query: QUERIES.ACCOUNTS.ALL,
             data: {
@@ -114,7 +116,7 @@
         {#if $currencies.loading}
           Loading...
         {:else if $currencies.data}
-          {#each $currencies.data.currencies.nodes as currency}
+          {#each $currencies.data?.currencies?.nodes || [] as currency}
             <option value={currency.id}>{currency.name}</option>
           {/each}
         {/if}
@@ -127,7 +129,7 @@
         {#if $accountTypes.loading}
           Loading...
         {:else if $accountTypes.data}
-          {#each $accountTypes.data.accountTypes.nodes as accountType}
+          {#each $accountTypes.data?.accountTypes?.nodes || [] as accountType}
             <option value={accountType.id}>{accountType.name}</option>
           {/each}
         {/if}

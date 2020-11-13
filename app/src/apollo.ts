@@ -54,10 +54,12 @@ const client = new ApolloClient({
           // pick out account object from cache that might have been there
           // when account list was loaded
           account(_, { args, toReference }) {
-            return toReference({
-              __typename: 'Account',
-              id: args.id,
-            })
+            if (args && args.id)
+              return toReference({
+                __typename: 'Account',
+                id: args.id,
+              })
+            return undefined
           },
         },
       },

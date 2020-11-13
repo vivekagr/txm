@@ -12,12 +12,12 @@
   import AccountForm from './AccountForm.svelte'
 
   interface AccountDetailParams {
-    id?: string
+    id: string
   }
 
-  export let params: AccountDetailParams = {}
+  export let params: AccountDetailParams
 
-  let searchQuery: string | null = null
+  let searchQuery: string = ''
 
   const account = query<Account, AccountVariables>(QUERIES.ACCOUNTS.ONE, {
     variables: {
@@ -45,9 +45,9 @@
   <h1 class="inline-block"><a class="heading" href="#/accounts">Accounts</a></h1>
   {#if $account.data}
     <span class="inline-block mx-1">&gt;</span>
-    <span class="font-bold text-green-700">{$account.data.account.bank}
+    <span class="font-bold text-green-700">{$account.data?.account?.bank}
       ––
-      {$account.data.account.number}</span>
+      {$account.data?.account?.number}</span>
     <button
       class="btn-plain btn-plain-blue ml-2 float-right"
       on:click={toggleForm}
@@ -57,9 +57,9 @@
 </div>
 
 {#if formVisible}
-  <AccountForm account={$account.data.account} cancelCallback={toggleForm} />
+  <AccountForm account={$account.data?.account} cancelCallback={toggleForm} />
 {/if}
 
 {#if $transactions.data}
-  <TransactionList transactions={$transactions.data.transactionsSearch.nodes} />
+  <TransactionList transactions={$transactions.data?.transactionsSearch?.nodes} />
 {/if}

@@ -20,18 +20,22 @@ type SheetTransactionRow = {
   [k: string]: string
 }
 
-// standard keys that we use for representing transactions internally
-type StandardHeader = 'date' | 'narration' | 'reference' | 'debit' | 'credit'
+interface HeaderLookupMap {
+  date: string
+  narration: string
+  debit: string
+  credit: string
+  reference?: string
+}
+
+function isHeaderLookupMap(arg: Partial<HeaderLookupMap>): arg is HeaderLookupMap {
+  return !!(arg && arg.date && arg.narration && arg.debit && arg.credit)
+}
+
+type StandardHeader = keyof HeaderLookupMap
 
 // type for mapping standard header key to corresponding possible values found in user's sheets
-type HeaderLookupMapOptions = {
-  [k in StandardHeader]: string[]
-}
-
-// type for mapping standard header key to user's sheet specific header key
-type HeaderLookupMap = {
-  [k in StandardHeader]?: string
-}
+type HeaderLookupMapOptions = Record<StandardHeader, string[]>
 
 const HEADER_LOOKUP_MAP_OPTIONS: HeaderLookupMapOptions = {
   date: ['value dt', 'value date', 'date'],
@@ -43,8 +47,12 @@ const HEADER_LOOKUP_MAP_OPTIONS: HeaderLookupMapOptions = {
 
 // Builds <sheet header value> => <standard name> map
 function createLookupMap(headers: string[]): HeaderLookupMap {
-  return Object.entries(HEADER_LOOKUP_MAP_OPTIONS).reduce(
-    (accumulator: HeaderLookupMap, [standardKey, allowedKeys]: [StandardHeader, string[]]) => {
+  const list = Object.entries(HEADER_LOOKUP_MAP_OPTIONS) as [StandardHeader, string[]][]
+  const lookupMap = list.reduce(
+    (
+      accumulator: Partial<HeaderLookupMap>,
+      [standardKey, allowedKeys]: [StandardHeader, string[]]
+    ) => {
       const matchedKey = headers.find((v) => allowedKeys.indexOf(v.trim().toLowerCase()) > -1)
       if (matchedKey) {
         accumulator[standardKey] = matchedKey
@@ -54,16 +62,26 @@ function createLookupMap(headers: string[]): HeaderLookupMap {
     },
     {}
   )
+
+  if (!isHeaderLookupMap) {
+    throw Error('Sheet parsing error: unable to build header lookup map')
+  }
+
+  return lookupMap as HeaderLookupMap
 }
 
 export function extractTransactionsFromSheet(
   sheet: XLSX.Sheet
 ): { data: SheetTransactionRow[]; headers: string[] } {
+  if (!sheet || !sheet['!ref']) {
+    throw Error('Sheet parsing error: could not decode the sheet range')
+  }
+
   const sheetRange = XLSX.utils.decode_range(sheet['!ref'])
 
   const header: SheetHeaderRow = {
-    start: { encoded: null, decoded: null },
-    end: { encoded: null, decoded: null },
+    start: { encoded: undefined, decoded: undefined },
+    end: { encoded: undefined, decoded: undefined },
   }
 
   // Find cell that's the header for the date column
@@ -75,7 +93,7 @@ export function extractTransactionsFromSheet(
   })
 
   if (!headerCellIndex) {
-    throw Error("Coudln't find the date header cell")
+    throw Error('Sheet parsing error: coudl not find the date header cell')
   }
 
   header.start.encoded = headerCellIndex
@@ -147,11 +165,12 @@ export function transformTransactionList(
   const transformedTxs = cleanedTxs.map((tx: SheetTransactionRow) => ({
     date: parseDate(cleanData(tx[headerLookupMap.date])),
     narrationText: cleanData(tx[headerLookupMap.narration]),
-    referenceText: cleanData(tx[headerLookupMap.reference]),
+    referenceText: headerLookupMap.reference ? cleanData(tx[headerLookupMap.reference]) : null,
     amount: parseFloatString(
       cleanData(tx[headerLookupMap.debit]) || cleanData(tx[headerLookupMap.credit])
     ),
     isCredit: !!cleanData(tx[headerLookupMap.credit]),
+    notes: null,
   }))
 
   return transformedTxs

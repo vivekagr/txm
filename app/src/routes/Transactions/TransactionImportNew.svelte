@@ -20,16 +20,17 @@
   )
 
   accounts.result().then((r) => {
-    if (!accountId && r.data.accounts.nodes.length) accountId = r.data.accounts.nodes[0].id
+    if (r.data?.accounts?.nodes[0]?.id) accountId = r.data.accounts.nodes[0].id
   })
 
   let rows: Transaction[]
 
   interface FileChangeEvent extends Event {
-    currentTarget: EventTarget & { files: FileList }
+    currentTarget: EventTarget & { files: FileList | null }
   }
 
   async function handleFileChange(event: FileChangeEvent) {
+    if (!event.currentTarget.files) return
     rows = await parseSheet(event.currentTarget.files[0])
   }
 
@@ -52,8 +53,8 @@
         Error:
         {$accounts.error}
       {:else if $accounts.data}
-        {#each $accounts.data.accounts.nodes as a}
-          <option value={a.id}>{a.bank} – {a.number} ({a.currency.code.toUpperCase()})</option>
+        {#each $accounts.data?.accounts?.nodes || [] as a}
+          <option value={a.id}>{a.bank} – {a.number} ({a.currency?.code?.toUpperCase()})</option>
         {/each}
       {/if}
     </select>

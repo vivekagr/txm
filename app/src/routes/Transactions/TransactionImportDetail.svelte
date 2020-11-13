@@ -25,12 +25,13 @@
   </h1>
   {#if $transactionImport.data}
     <span class="inline-block mx-1">&gt;</span>
-    <span class="font-bold text-green-700">{$transactionImport.data.transactionImport.account.bank}
+    <span
+      class="font-bold text-green-700">{$transactionImport.data?.transactionImport?.account?.bank}
       ––
-      {$transactionImport.data.transactionImport.account.number}</span>
+      {$transactionImport.data?.transactionImport?.account?.number}</span>
   {/if}
 </div>
 
 {#if $transactionImport.data}
-  <TransactionList transactions={$transactionImport.data.transactionImport.transactions.nodes} />
+  <TransactionList transactions={$transactionImport.data?.transactionImport?.transactions.nodes} />
 {/if}

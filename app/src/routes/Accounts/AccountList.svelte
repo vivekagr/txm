@@ -1,11 +1,13 @@
-<script>
+<script lang="ts">
   import { query } from 'svelte-apollo'
   import { push } from 'svelte-spa-router'
 
   import QUERIES from 'app/queries'
+  import type { Accounts } from 'app/data/types/Accounts'
+
   import AccountForm from './AccountForm.svelte'
 
-  const accounts = query(QUERIES.ACCOUNTS.ALL)
+  const accounts = query<Accounts>(QUERIES.ACCOUNTS.ALL)
 
   let formVisible = false
   function toggleForm() {
@@ -30,14 +32,14 @@
     <p>Error: {$accounts.error}</p>
   {:else if $accounts.data}
     <ul class="grid grid-cols-3 gap-4 justify-items-auto">
-      {#each $accounts.data.accounts.nodes as account}
+      {#each $accounts.data?.accounts?.nodes || [] as account}
         <li
           on:click={() => push(`#/accounts/${account.id}/`)}
           class="block border rounded border-gray-400 px-4 py-3 cursor-pointer transition-colors duration-200 hover:border-gray-600">
           <div class="inline-block text-blue-700 text-md font-semibold rounded">{account.bank}</div>
           <div class="block font-semibold text-sm mt-2">
-            {account.accountType.name}
-            <span class="text-green-700 uppercase">– {account.currency.code}</span>
+            {account.accountType?.name}
+            <span class="text-green-700 uppercase">– {account.currency?.code}</span>
           </div>
           <div class="mt-2">{account.number}</div>
         </li>

@@ -32,7 +32,7 @@
   }
 
   function dropdown(
-    _node: HTMLElement,
+    _node: Element,
     { duration, in: isIn = false }: DropdownParams
   ): TransitionConfig {
     return {

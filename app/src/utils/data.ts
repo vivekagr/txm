@@ -2,7 +2,7 @@
  * Trims out empty spaces from the given string & leftover single dash and returns cleaned string
  * @param s String to be cleaned
  */
-export function cleanData(s: string): string {
+export function cleanData(s: string | null | undefined): string {
   const cleaned = (s || '').trim()
   if (cleaned === '-') return ''
   return cleaned

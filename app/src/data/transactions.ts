@@ -3,7 +3,7 @@ export interface Transaction {
   date: Date
   amount: number
   isCredit: boolean
-  narrationText?: string
-  referenceText?: string
-  notes?: string
+  narrationText: string
+  referenceText: string | null
+  notes: string | null
 }

@@ -4,7 +4,6 @@
 
   import type { RegisterUser, RegisterUserVariables } from 'app/data/types/RegisterUser'
   import QUERIES from 'app/queries'
-  import { authToken } from 'app/stores'
 
   const authMutation = mutation<RegisterUser, RegisterUserVariables>(QUERIES.AUTHENTICATE)
 
@@ -22,11 +21,9 @@
   async function handleSubmit() {
     wrongCredentials = false
 
-    const {
-      data: {
-        authenticate: { jwtToken },
-      },
-    } = await authMutation({
+    if (!formData.name || !formData.username || !formData.password) return
+
+    const res = await authMutation({
       variables: {
         name: formData.name,
         username: formData.username,
@@ -34,13 +31,11 @@
       },
     })
 
-    if (!jwtToken) {
+    if (res.data?.registerUser?.user?.id) {
+      replace('/login')
+    } else {
       wrongCredentials = true
-      return
     }
-
-    authToken.set(jwtToken)
-    replace('/login')
   }
 </script>
 
