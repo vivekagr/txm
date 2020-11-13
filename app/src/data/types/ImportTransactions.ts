@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { TransactionTypeInput } from "./globalTypes";
+import type { TransactionTypeInput } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: ImportTransactions
