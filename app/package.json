@@ -9,6 +9,7 @@
     "eslint": "eslint ./src",
     "typegen": "apollo client:codegen --target=typescript --endpoint=http://localhost:5433/graphql --outputFlat ./src/data/types",
     "typegen:watch": "apollo client:codegen --target=typescript --endpoint=http://localhost:5433/graphql --outputFlat --watch ./src/data/types",
+    "typecheck": "tsc --noEmit",
     "prettier:check": "prettier --check src/",
     "prettier:write": "prettier --write src/",
     "validate": "svelte-check"

@@ -31,4 +31,5 @@ jobs:
       run: yarn eslint
     - name: Svelte check
       run: yarn validate
-      
+    - name: Typescript check
+      run: yarn typecheck
