@@ -29,4 +29,6 @@ jobs:
       run: yarn prettier:check
     - name: ESLint check
       run: yarn eslint
+    - name: Svelte check
+      run: yarn validate
       

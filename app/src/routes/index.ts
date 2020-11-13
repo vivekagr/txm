@@ -9,6 +9,7 @@ import TransactionImports from './Transactions/TransactionImports.svelte'
 import TransactionImportDetail from './Transactions/TransactionImportDetail.svelte'
 import AuthLogin from './Auth/Login.svelte'
 import AuthLogout from './Auth/Logout.svelte'
+import AuthSignup from './Auth/Signup.svelte'
 
 // Wrapper around given component that checks for valid auth token
 const requireAuth = (component: typeof SvelteComponent) =>
@@ -25,6 +26,7 @@ export const routes: RouteDefinition = {
   '/': requireAuth(Accounts),
   '/login': AuthLogin,
   '/logout': AuthLogout,
+  '/signup': AuthSignup,
   '/accounts': requireAuth(Accounts),
   '/accounts/:id': requireAuth(AccountDetail),
   '/transactions/imports': requireAuth(TransactionImports),
